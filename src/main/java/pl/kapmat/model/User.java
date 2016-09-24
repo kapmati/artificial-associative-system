@@ -1,12 +1,15 @@
-/**
- * Created by Kapmat on 2016-09-21.
- */
 package pl.kapmat.model;
 
 import javax.persistence.*;
 
+/**
+ * User model
+ *
+ * Created by Kapmat on 2016-09-21.
+ */
+
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User {
 
 	@Id

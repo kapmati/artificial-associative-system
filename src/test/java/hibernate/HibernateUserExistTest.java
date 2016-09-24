@@ -1,3 +1,5 @@
+package hibernate;
+
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.After;
@@ -11,6 +13,8 @@ import pl.kapmat.model.User;
 import pl.kapmat.util.HibernateUtil;
 
 /**
+ * Test if it is possible to insert users with the same login to the database.
+ *
  * Created by Kapmat on 2016-09-24.
  */
 

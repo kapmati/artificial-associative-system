@@ -1,5 +1,6 @@
+package hibernate;
+
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,8 @@ import pl.kapmat.model.User;
 import pl.kapmat.util.HibernateUtil;
 
 /**
+ * Test if it is possible to insert single user to the database.
+ *
  * Created by Kapmat on 2016-09-24.
  */
 

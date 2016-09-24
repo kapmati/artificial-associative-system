@@ -1,6 +1,3 @@
-/**
- * Created by Kapmat on 2016-09-24.
- */
 package pl.kapmat.util;
 
 import org.hibernate.SessionFactory;
@@ -9,6 +6,12 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/**
+ * Connector between hibernate and database.
+ *
+ * Created by Kapmat on 2016-09-24.
+ */
 
 public class HibernateUtil {
 
