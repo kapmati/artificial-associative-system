@@ -27,7 +27,6 @@ public class HibernateUserExistTest {
 
 	private Session session;
 
-	private User user;
 	private static final String LOGIN = "ser5439";
 	private static final String PASSWORD = "pass";
 	private static final Role ROLE = Role.ADMIN;
@@ -38,7 +37,7 @@ public class HibernateUserExistTest {
 	@Test
 	public void test() {
 		LOGGER.info("Create users");
-		user = new User();
+		User user = new User();
 		user.setLogin(LOGIN);
 		user.setPassword(PASSWORD);
 		user.setRole(ROLE);
