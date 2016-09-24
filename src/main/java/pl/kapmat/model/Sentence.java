@@ -22,12 +22,13 @@ public class Sentence {
 	private String text;
 
 	@Column(name = "language", nullable = false)
-	private String language;
+	@Enumerated(EnumType.STRING)
+	private Language language;
 
 	public Sentence() {
 	}
 
-	public Sentence(String text, String language) {
+	public Sentence(String text, Language language) {
 		this.text = text;
 		this.language = language;
 	}
@@ -40,11 +41,11 @@ public class Sentence {
 		this.text = text;
 	}
 
-	public String getLanguage() {
+	public Language getLanguage() {
 		return language;
 	}
 
-	public void setLanguage(String language) {
+	public void setLanguage(Language language) {
 		this.language = language;
 	}
 
