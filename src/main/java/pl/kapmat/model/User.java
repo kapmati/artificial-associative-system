@@ -6,7 +6,7 @@ package pl.kapmat.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "USERS")
 public class User {
 
 	@Id

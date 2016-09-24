@@ -4,16 +4,23 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <!--<property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>-->
         <property name="connection.url">jdbc:mysql://mysql.agh.edu.pl:3306/kapmat</property>
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.username">kapmat</property>
         <property name="connection.password">kapmatphp</property>
 
+        <property name="hibernate.connection.pool_size">1</property>
+
         <!--<property name="hbm2ddl.auto">update</property>-->
+        <!--Show SQL queries-->
         <!--<property name="show_sql">false</property>-->
         <!--<property name="format_sql">false</property>-->
 
-        <mapping class="pl.kapmat.model.User"></mapping>
+        <!--Need to create hibernate session-->
+        <property name="hibernate.current_session_context_class">thread</property>
+
+        <mapping class="pl.kapmat.model.User"/>
+        <!--<mapping package="pl.kapmat.model"/>-->
     </session-factory>
 </hibernate-configuration>
