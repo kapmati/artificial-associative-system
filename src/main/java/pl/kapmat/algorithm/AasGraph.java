@@ -2,7 +2,10 @@ package pl.kapmat.algorithm;
 
 import pl.kapmat.model.Sentence;
 import pl.kapmat.service.SentenceService;
+import pl.kapmat.util.TimeCounter;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -14,6 +17,7 @@ public class AasGraph {
 
 	private SentenceService sentenceService = new SentenceService();
 	private Set<Node> nodeSet = new HashSet<>();
+	private TimeCounter timer = new TimeCounter();
 
 	public void run() {
 		//Load sentences from db
@@ -24,7 +28,10 @@ public class AasGraph {
 		sentences = sentenceService.replaceCharacter(sentences, '-', ' ');
 		sentences = sentenceService.replaceCharacter(sentences, '.', ' ');
 
+		timer.startCount();
 		buildGraph(sentences);
+		timer.endCount();
+		timer.showTime();
 	}
 
 	/*TODO
@@ -39,13 +46,13 @@ public class AasGraph {
 			Set<Node> neighbourNodes = new LinkedHashSet<>();
 			for (String word: words) {
 				if (!word.equals("")) {
-					singleNode = new Node(word);
+					singleNode = new Node(word.toUpperCase());
 					//Check if word is new
 					if (!nodeSet.contains(singleNode)) {
 						nodeSet.add(singleNode);
 					} else {
 						singleNode = nodeSet.stream()
-								.filter(x -> x.getWord().equals(word))
+								.filter(x -> x.getWord().equals(word.toUpperCase()))
 								.findFirst()
 								.get();
 						singleNode.increaseLevel();

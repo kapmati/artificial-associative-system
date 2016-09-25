@@ -18,6 +18,8 @@ public class InsertSentenceWorker {
 	private final Logger LOGGER = LoggerFactory.getLogger(InsertSentenceWorker.class);
 
 	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences.txt";
 	private static final Language LANGUAGE = Language.PL;
 
 	public static void insertSentences() {

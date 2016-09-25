@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import pl.kapmat.algorithm.AasGraph;
 import pl.kapmat.algorithm.Node;
 import pl.kapmat.util.HibernateUtil;
+import pl.kapmat.util.InsertSentenceWorker;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class Application {
 	public static void main(String[] args) {
 
 		//ADD NEW SENTENCES
-//		InsertSentenceWorker.insertSentences();
+		InsertSentenceWorker.insertSentences();
 
 		AasGraph aasGraph = new AasGraph();
 		aasGraph.run();
