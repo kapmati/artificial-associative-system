@@ -9,7 +9,7 @@ import pl.kapmat.service.SentenceService;
 import java.util.List;
 
 /**
- * DESCRIPTION
+ *
  * <p>
  * Created by Kapmat on 2016-09-24.
  */

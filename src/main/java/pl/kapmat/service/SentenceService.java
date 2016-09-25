@@ -24,9 +24,9 @@ public class SentenceService {
 		return dao.getALL(Sentence.class);
 	}
 
-	public List<Sentence> replaceCharacter(List<Sentence> sentences, char newChar, char oldChar) {
+	public List<Sentence> replaceCharacter(List<Sentence> sentences, char oldChar, char newChar) {
 		List<String> sentencesList = sentences.stream()
-				.map(s -> s.getText().replace(newChar, oldChar))
+				.map(s -> s.getText().replace(oldChar, newChar))
 				.collect(Collectors.toList());
 		return IntStream.range(0, sentences.size())
 				.mapToObj(i -> new Sentence(sentencesList.get(i), sentences.get(0).getLanguage()))
