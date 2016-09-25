@@ -53,6 +53,11 @@ public class Node {
 		this.neighbourMap = neighbourMap;
 	}
 
+	public void addNeighbour(Node newNeighbour) {
+		//TODO Change rate
+		this.neighbourMap.put(newNeighbour, 0);
+	}
+
 	public List<Node> getNeighbourList() {
 		return neighbourMap.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
 	}
