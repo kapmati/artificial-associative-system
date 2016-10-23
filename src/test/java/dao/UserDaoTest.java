@@ -3,7 +3,8 @@ package dao;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.kapmat.dao.Dao;
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.kapmat.dao.UserDAO;
 import pl.kapmat.model.Role;
 import pl.kapmat.model.User;
 
@@ -30,7 +31,8 @@ public class UserDaoTest {
 
 	private static final String UPDATE_PASSWORD = "updatePas";
 
-	private Dao dao = new Dao();
+	@Autowired
+	private UserDAO userDAO;
 
 	@Test
 	public void test() {
@@ -46,50 +48,50 @@ public class UserDaoTest {
 		secondUser.setRole(SECOND_ROLE);
 
 		LOGGER.info("Insert users");
-		int firstId = dao.save(user);
-		int secondId = dao.save(secondUser);
+		User firstU = userDAO.save(user);
+		User secondU = userDAO.save(secondUser);
 
 		LOGGER.info("Get users list");
-		List<User> userList = dao.getALL(User.class);
+		List<User> userList = (List<User>) userDAO.findAll();
 		boolean firstUserExistInDb = userList.stream().anyMatch(u -> u.getLogin().equals(LOGIN));
 		boolean secondUserExistInDb = userList.stream().anyMatch(u -> u.getLogin().equals(SECOND_LOGIN));
 		assertTrue(firstUserExistInDb && secondUserExistInDb);
 
 		LOGGER.info("Get first user");
-		User firstUserFromDB = dao.get(User.class, firstId);
+		User firstUserFromDB = userDAO.findOne(firstU.getId());
 		assertTrue(firstUserFromDB.getLogin().equals(LOGIN));
 		assertTrue(firstUserFromDB.getPassword().equals(PASSWORD));
 		assertTrue(firstUserFromDB.getRole().equals(ROLE));
 
 		LOGGER.info("Update second user");
 		secondUser.setPassword(UPDATE_PASSWORD);
-		dao.update(secondUser);
+		userDAO.save(secondUser);
 
 		LOGGER.info("Get second user");
-		User secondUserFromDB = dao.get(User.class, secondId);
+		User secondUserFromDB = userDAO.findOne(secondU.getId());
 		assertTrue(secondUserFromDB.getLogin().equals(SECOND_LOGIN));
 		assertTrue(secondUserFromDB.getPassword().equals(UPDATE_PASSWORD));
 
 		LOGGER.info("Delete users");
-		dao.delete(user);
-		dao.delete(secondUser);
+		userDAO.delete(user);
+		userDAO.delete(secondUser);
 
 		//Check if users exist in database after using delete methods
-		List<User> newUserList = dao.getALL(User.class);
+		List<User> newUserList = (List<User>) userDAO.findAll();
 		firstUserExistInDb = newUserList.stream().anyMatch(u -> u.getLogin().equals(LOGIN));
 		secondUserExistInDb = newUserList.stream().anyMatch(u -> u.getLogin().equals(SECOND_LOGIN));
 		assertTrue(!firstUserExistInDb && !secondUserExistInDb);
 
 		//Check if users exist in database after using saveList method
-		dao.saveList(userList);
-		userList = dao.getALL(User.class);
+		userDAO.save(userList);
+		userList = (List<User>) userDAO.findAll();
 		firstUserExistInDb = userList.stream().anyMatch(u -> u.getLogin().equals(LOGIN));
 		secondUserExistInDb = userList.stream().anyMatch(u -> u.getLogin().equals(SECOND_LOGIN));
 		assertTrue(firstUserExistInDb && secondUserExistInDb);
 
 		//Check if users exist in database after using deleteList method
-		dao.deleteList(userList);
-		userList = dao.getALL(User.class);
+		userDAO.delete(userList);
+		userList = (List<User>) userDAO.findAll();
 		firstUserExistInDb = userList.stream().anyMatch(u -> u.getLogin().equals(LOGIN));
 		secondUserExistInDb = userList.stream().anyMatch(u -> u.getLogin().equals(SECOND_LOGIN));
 		assertTrue(!firstUserExistInDb && !secondUserExistInDb);

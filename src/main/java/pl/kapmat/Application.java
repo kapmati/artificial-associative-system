@@ -1,14 +1,8 @@
 package pl.kapmat;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pl.kapmat.algorithm.AasGraph;
-import pl.kapmat.algorithm.Node;
-import pl.kapmat.util.HibernateUtil;
-import pl.kapmat.util.InsertSentenceWorker;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Main class
@@ -16,19 +10,11 @@ import java.util.Set;
  * Created by Kapmat on 2016-09-21.
  */
 
+@SpringBootApplication
 public class Application {
 
-	private final Logger LOGGER = LoggerFactory.getLogger(Application.class);
-
 	public static void main(String[] args) {
-
-		//ADD NEW SENTENCES
-		InsertSentenceWorker.insertSentences();
-
-		AasGraph aasGraph = new AasGraph();
-		aasGraph.run();
-
-		//Probably there is a bug in a Hibernate lib 4.x and it's necessary to close session at the end of main method
-		HibernateUtil.getSessionFactory().close();
+		SpringApplication.run(Application.class, args);
 	}
+
 }

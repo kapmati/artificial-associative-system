@@ -7,13 +7,12 @@ import javax.persistence.*;
  *
  * Created by Kapmat on 2016-09-21.
  */
-
 @Entity
 @Table(name = "users")
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", nullable = false, unique = true)
 	private int id;
 
@@ -35,6 +34,10 @@ public class User {
 		this.login = login;
 		this.password = password;
 		this.role = role;
+	}
+
+	public int getId() {
+		return this.id;
 	}
 
 	public String getLogin() {
@@ -71,6 +74,14 @@ public class User {
 				'}';
 	}
 
+	public String toStringWithoutPassword() {
+		return "User{" +
+				"id=" + id +
+				", login='" + login + '\'' +
+				", role=" + role +
+				'}';
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -92,7 +103,6 @@ public class User {
 			return false;
 		}
 		return role == user.role;
-
 	}
 
 	@Override

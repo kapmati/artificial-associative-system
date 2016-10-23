@@ -7,8 +7,6 @@ import javax.persistence.*;
  *
  * Created by Kapmat on 2016-09-21.
  */
-
-
 @Entity
 @Table(name = "sentences")
 public class Sentence {
