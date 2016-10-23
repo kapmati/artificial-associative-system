@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * User controller
  *
- * Created by Kapmat on 2016-10-23.
+ * @author Mateusz Kaproń
  */
 @Controller
 @RequestMapping("/user")

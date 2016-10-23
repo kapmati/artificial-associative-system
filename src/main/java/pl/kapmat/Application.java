@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Main class
  *
- * Created by Kapmat on 2016-09-21.
+ * @author Mateusz Kaproń
  */
 
 @SpringBootApplication

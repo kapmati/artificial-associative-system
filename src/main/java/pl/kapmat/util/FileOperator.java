@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 /**
  * FileOperator is responsible for reading data from txt file
  *
- * Created by Kapmat on 2016-09-24.
+ * @author Mateusz Kaproń
  */
 public class FileOperator {
 

@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Test basic DAO operations on single User.
  *
- * Created by Kapmat on 2016-09-24.
+ * @author Mateusz Kaproń
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest

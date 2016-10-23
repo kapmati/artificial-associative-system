@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Sentence controller
  *
- * Created by Kapmat on 2016-10-23.
+ * @author Mateusz Kaproń
  */
 @Controller
 @RequestMapping("/sentence")

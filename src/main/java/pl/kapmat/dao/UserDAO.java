@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * User DAO interface
  *
- * Created by Kapmat on 2016-10-23.
+ * @author Mateusz Kaproń
  */
 @Transactional
 public interface UserDAO extends CrudRepository<User, Integer> {

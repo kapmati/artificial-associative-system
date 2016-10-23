@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Sentence DAO interface
  *
- * Created by Kapmat on 2016-10-23.
+ * @author Mateusz Kaproń
  */
 @Transactional
 public interface SentenceDAO extends CrudRepository<Sentence, Integer> {

@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 /**
  * TimeCounter
  *
- * Created by Kapmat on 2016-09-25.
+ * @author Mateusz Kaproń
  */
 public class TimeCounter {
 

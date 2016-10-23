@@ -13,16 +13,16 @@ import pl.kapmat.service.SentenceService;
 /**
  * Main controller
  *
- * Created by Kapmat on 2016-10-23.
+ * @author Mateusz Kaproń
  */
 @Controller
 public class MainController {
 
 	@Autowired
-	private SentenceDAO sentenceDAO;
+	private SentenceService sentenceService;
 
 	@Autowired
-	private SentenceService sentenceService;
+	private AasGraph aasGraph;
 
 	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
 	//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
@@ -32,9 +32,7 @@ public class MainController {
 	@RequestMapping("/")
 	@ResponseBody
 	public String index() {
-		AasGraph aasGraph = new AasGraph();
-		sentenceService.setDAO(sentenceDAO);
-		aasGraph.run(sentenceService);
+		aasGraph.run();
 		return "Main page - Artificial associative system";
 	}
 

@@ -5,7 +5,7 @@ import javax.persistence.*;
 /**
  * Sentence model
  *
- * Created by Kapmat on 2016-09-21.
+ * @author Mateusz Kaproń
  */
 @Entity
 @Table(name = "sentences")

@@ -5,7 +5,7 @@ import javax.persistence.*;
 /**
  * User model
  *
- * Created by Kapmat on 2016-09-21.
+ * @author Mateusz Kaproń
  */
 @Entity
 @Table(name = "users")

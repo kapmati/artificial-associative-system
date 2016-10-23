@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * FileOperator test
  *
- * Created by Kapmat on 2016-09-24.
+ * @author Mateusz Kaproń
  */
 public class FileOperatorTest {
 

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Small part of graph
  *
- * Created by Kapmat on 2016-09-25.
+ * @author Mateusz Kaproń
  */
 public class Node {
 
