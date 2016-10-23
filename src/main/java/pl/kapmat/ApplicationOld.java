@@ -23,8 +23,6 @@ public class ApplicationOld {
 //		//ADD NEW SENTENCES
 //		SentenceService sentenceService = new SentenceService();
 //		sentenceService.insertSentences(PATH, LANGUAGE);
-
-		AasGraph aasGraph = new AasGraph();
-		aasGraph.run();
+		
 	}
 }

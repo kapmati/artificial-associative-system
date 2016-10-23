@@ -1,6 +1,7 @@
 package pl.kapmat.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import pl.kapmat.dao.SentenceDAO;
 import pl.kapmat.model.Language;
@@ -17,10 +18,14 @@ import java.util.stream.IntStream;
  * Created by Kapmat on 2016-09-24.
  */
 @Service
+@ComponentScan(basePackages = "pl.kapmat.dao")
 public class SentenceService {
 
-	@Autowired
 	private SentenceDAO sentenceDAO;
+
+	public void setDAO(SentenceDAO sentenceDAO) {
+		this.sentenceDAO = sentenceDAO;
+	}
 
 	private void insertSentencesIntoDatabase(List<Sentence> sentences) {
 		sentenceDAO.save(sentences);

@@ -34,21 +34,13 @@ public class SentenceController {
 	@RequestMapping("getSentencesByLanguage/{language}")
 	@ResponseBody
 	public String getSentencesByLanguage(@PathVariable String language) {
-		Language lang = null;
-		switch (language.toUpperCase()) {
-			case "PL":
-				lang = Language.PL;
-				break;
-			case "ENG":
-				lang = Language.ENG;
-				break;
-		}
+		Language lang = Language.getLanguageByName(language);
 		List<Sentence> sentences = sentenceDAO.findByLanguage(lang);
 		if (sentences.size() == 0) {
 			return "Sentences with '" + language + "' language not found";
 		}
 		StringBuffer stringBuffer = new StringBuffer();
-		sentences.forEach(sentence -> stringBuffer.append(sentence.getText()).append("<br>"));
+		sentences.forEach(sentence -> stringBuffer.append(sentence.getId()).append(".").append(sentence.getText()).append("<br>"));
 		return stringBuffer.toString();
 	}
 }

@@ -1,25 +1,27 @@
 package pl.kapmat.algorithm;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import pl.kapmat.dao.SentenceDAO;
 import pl.kapmat.model.Sentence;
 import pl.kapmat.service.SentenceService;
 import pl.kapmat.util.TimeCounter;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
  * Artificial associative system main class
- *
+ * <p>
  * Created by Kapmat on 2016-09-25.
  */
 public class AasGraph {
 
-	private SentenceService sentenceService = new SentenceService();
 	private Set<Node> nodeSet = new HashSet<>();
 	private TimeCounter timer = new TimeCounter();
 
-	public void run() {
+	public void run(SentenceService sentenceService) {
 		//Load sentences from db
 		List<Sentence> sentences = sentenceService.getAllSentences();
 
@@ -40,11 +42,11 @@ public class AasGraph {
 	*/
 	private void buildGraph(List<Sentence> sentences) {
 		String[] words;
-		for (Sentence sentence: sentences) {
+		for (Sentence sentence : sentences) {
 			words = sentence.getText().split(" ");
 			Node singleNode;
 			Set<Node> neighbourNodes = new LinkedHashSet<>();
-			for (String word: words) {
+			for (String word : words) {
 				if (!word.equals("")) {
 					singleNode = new Node(word.toUpperCase());
 					//Check if word is new
@@ -66,8 +68,8 @@ public class AasGraph {
 
 	private void connectNeighbours(Set<Node> neighbourNodes) {
 		List<Node> nodesList = new ArrayList<>(neighbourNodes);
-		for (Node mainNode: nodesList) {
-			for (Node otherNode: nodesList) {
+		for (Node mainNode : nodesList) {
+			for (Node otherNode : nodesList) {
 				if (!mainNode.equals(otherNode)) {
 					mainNode.addNeighbour(otherNode);
 				}

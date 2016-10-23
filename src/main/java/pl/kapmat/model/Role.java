@@ -7,5 +7,16 @@ package pl.kapmat.model;
  */
 
 public enum Role {
-	ADMIN, USER
+	ADMIN, USER;
+
+	public static Role getRoleByName(String name) {
+		switch (name.toUpperCase()) {
+			case "ADMIN":
+				return Role.ADMIN;
+			case "USER":
+				return Role.USER;
+			default:
+				return Role.USER;
+		}
+	}
 }

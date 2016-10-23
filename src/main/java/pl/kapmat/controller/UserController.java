@@ -76,16 +76,7 @@ public class UserController {
 	@RequestMapping("/getUsersByRole/{role}")
 	@ResponseBody
 	public String getUsersByRole(@PathVariable String role) {
-		Role r = null;
-		switch (role.toUpperCase()) {
-			case "ADMIN":
-				r = Role.ADMIN;
-				break;
-			case "USER":
-				r = Role.USER;
-				break;
-		}
-
+		Role r = Role.getRoleByName(role);
 		List<User> users = userDAO.findByRole(r);
 		if (users.size() == 0) {
 			return "Users with '" + role + "' role not found";
