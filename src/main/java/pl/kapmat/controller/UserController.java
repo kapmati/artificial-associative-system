@@ -3,6 +3,7 @@ package pl.kapmat.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.kapmat.dao.UserDAO;
@@ -51,9 +52,9 @@ public class UserController {
 		return "User successfully updated!";
 	}
 
-	@RequestMapping("/delete")
+	@RequestMapping("/delete/{id}")
 	@ResponseBody
-	public String delete(int id) {
+	public String delete(@PathVariable int id) {
 		try {
 			userDAO.delete(id);
 		} catch (EmptyResultDataAccessException e) {
@@ -62,9 +63,9 @@ public class UserController {
 		return "User successfully deleted!";
 	}
 
-	@RequestMapping("/getUserByLogin")
+	@RequestMapping("/getUserByLogin/{login}")
 	@ResponseBody
-	public String getUserByLogin(String login) {
+	public String getUserByLogin(@PathVariable String login) {
 		User user = userDAO.findByLogin(login);
 		if (user == null) {
 			return "User '" + login + "' not found";
@@ -72,9 +73,9 @@ public class UserController {
 		return user.toStringWithoutPassword();
 	}
 
-	@RequestMapping("/getUsersByRole")
+	@RequestMapping("/getUsersByRole/{role}")
 	@ResponseBody
-	public String getUsersByRole(String role) {
+	public String getUsersByRole(@PathVariable String role) {
 		Role r = null;
 		switch (role.toUpperCase()) {
 			case "ADMIN":

@@ -2,6 +2,7 @@ package pl.kapmat.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.kapmat.dao.SentenceDAO;
@@ -30,9 +31,9 @@ public class SentenceController {
 		return stringBuffer.toString();
 	}
 
-	@RequestMapping("getSentencesByLanguage")
+	@RequestMapping("getSentencesByLanguage/{language}")
 	@ResponseBody
-	public String getSentencesByLanguage(String language) {
+	public String getSentencesByLanguage(@PathVariable String language) {
 		Language lang = null;
 		switch (language.toUpperCase()) {
 			case "PL":
