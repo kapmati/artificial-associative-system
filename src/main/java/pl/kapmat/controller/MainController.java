@@ -24,8 +24,8 @@ public class MainController {
 	@Autowired
 	private AasGraph aasGraph;
 
-	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
-	//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
+		private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
 	//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences.txt";
 	private static final Language LANGUAGE = Language.PL;
 
@@ -36,10 +36,10 @@ public class MainController {
 		return "Main page - Artificial associative system";
 	}
 
-	@RequestMapping("/insertData/{file}/{lang}")
+	@RequestMapping("/insertData")
 	@ResponseBody
-	public String insertData(@PathVariable String file, @PathVariable String lang) {
-		sentenceService.insertSentences(file, Language.getLanguageByName(lang));
-		return "File: " + file + "<br>Language: " + lang;
+	public String insertData() {
+		sentenceService.insertSentences(PATH, Language.PL);
+		return "File: " + PATH + "<br>Language: " + Language.PL;
 	}
 }

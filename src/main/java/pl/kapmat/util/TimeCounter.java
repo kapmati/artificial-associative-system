@@ -35,22 +35,22 @@ public class TimeCounter {
 		LocalDateTime tempDateTime = LocalDateTime.from(start);
 
 		long years = tempDateTime.until(end, ChronoUnit.YEARS);
-		tempDateTime = tempDateTime.plusYears( years );
+		tempDateTime = tempDateTime.plusYears(years);
 
 		long months = tempDateTime.until(end, ChronoUnit.MONTHS);
-		tempDateTime = tempDateTime.plusMonths( months );
+		tempDateTime = tempDateTime.plusMonths(months);
 
 		long days = tempDateTime.until(end, ChronoUnit.DAYS);
-		tempDateTime = tempDateTime.plusDays( days );
+		tempDateTime = tempDateTime.plusDays(days);
 
 		long hours = tempDateTime.until(end, ChronoUnit.HOURS);
-		tempDateTime = tempDateTime.plusHours( hours );
+		tempDateTime = tempDateTime.plusHours(hours);
 
 		long minutes = tempDateTime.until(end, ChronoUnit.MINUTES);
-		tempDateTime = tempDateTime.plusMinutes( minutes );
+		tempDateTime = tempDateTime.plusMinutes(minutes);
 
 		long seconds = tempDateTime.until(end, ChronoUnit.SECONDS);
-		tempDateTime = tempDateTime.plusMinutes( seconds );
+		tempDateTime = tempDateTime.plusSeconds(seconds);
 
 		long miliSeconds = tempDateTime.until(end, ChronoUnit.MILLIS);
 

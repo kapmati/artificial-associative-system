@@ -39,7 +39,10 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime();
 
+		timer.startCount();
 		nodeService.serializeSetOfNodes(nodeSet);
+		timer.endCount();
+		timer.showTime();
 
 		timer.startCount();
 		Set<Node> newSet = nodeService.deserializeSetOfNodes();
