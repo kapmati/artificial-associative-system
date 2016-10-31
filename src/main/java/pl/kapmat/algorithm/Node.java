@@ -1,5 +1,6 @@
 package pl.kapmat.algorithm;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author Mateusz Kaproń
  */
-public class Node {
+public class Node implements Serializable {
 
 	private String word;
 	private int level;
@@ -73,11 +74,21 @@ public class Node {
 
 		Node node = (Node) o;
 
-		return word.equals(node.word);
+		if (word == null && node.word == null) {
+			return true;
+		} else if (word == null || node.word == null) {
+			return false;
+		} else {
+			return word.equals(node.word);
+		}
 	}
 
 	@Override
 	public int hashCode() {
-		return word.hashCode();
+		if (word == null) {
+			return 0;
+		} else {
+			return word.hashCode();
+		}
 	}
 }

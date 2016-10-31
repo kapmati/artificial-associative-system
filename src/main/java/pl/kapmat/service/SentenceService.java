@@ -22,9 +22,9 @@ public class SentenceService {
 	@Autowired
 	private SentenceDAO sentenceDAO;
 
-	public void setDAO(SentenceDAO sentenceDAO) {
-		this.sentenceDAO = sentenceDAO;
-	}
+//	public void setDAO(SentenceDAO sentenceDAO) {
+//		this.sentenceDAO = sentenceDAO;
+//	}
 
 	private void insertSentencesIntoDatabase(List<Sentence> sentences) {
 		sentenceDAO.save(sentences);
@@ -42,6 +42,13 @@ public class SentenceService {
 		sentenceList = deleteSentencePartBeforeChar(sentenceList, '\t');
 
 		insertSentencesIntoDatabase(sentenceList);
+	}
+
+	public List<Sentence> deleteChars(List<Sentence> sentences, char[] charsToDelete) {
+		for (char character: charsToDelete) {
+			sentences = replaceCharacter(sentences, character, ' ');
+		}
+		return sentences;
 	}
 
 	public List<Sentence> replaceCharacter(List<Sentence> sentences, char oldChar, char newChar) {

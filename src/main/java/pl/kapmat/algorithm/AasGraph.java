@@ -3,6 +3,7 @@ package pl.kapmat.algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.kapmat.model.Sentence;
+import pl.kapmat.service.NodeService;
 import pl.kapmat.service.SentenceService;
 import pl.kapmat.util.TimeCounter;
 
@@ -19,6 +20,9 @@ public class AasGraph {
 	@Autowired
 	private SentenceService sentenceService;
 
+	@Autowired
+	private NodeService nodeService;
+
 	private Set<Node> nodeSet = new HashSet<>();
 	private TimeCounter timer = new TimeCounter();
 
@@ -27,13 +31,18 @@ public class AasGraph {
 		List<Sentence> sentences = sentenceService.getAllSentences();
 
 		//Delete unnecessary characters
-		sentences = sentenceService.replaceCharacter(sentences, ',', ' ');
-		sentences = sentenceService.replaceCharacter(sentences, '-', ' ');
-		sentences = sentenceService.replaceCharacter(sentences, '.', ' ');
-		sentences = sentenceService.replaceCharacter(sentences, ':', ' ');
+		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*'};
+		sentences = sentenceService.deleteChars(sentences, charsToDelete);
 
 		timer.startCount();
 		buildGraph(sentences);
+		timer.endCount();
+		timer.showTime();
+
+		nodeService.serializeSetOfNodes(nodeSet);
+
+		timer.startCount();
+		Set<Node> newSet = nodeService.deserializeSetOfNodes();
 		timer.endCount();
 		timer.showTime();
 	}
@@ -55,10 +64,7 @@ public class AasGraph {
 					if (!nodeSet.contains(singleNode)) {
 						nodeSet.add(singleNode);
 					} else {
-						singleNode = nodeSet.stream()
-								.filter(x -> x.getWord().equals(word.toUpperCase()))
-								.findFirst()
-								.get();
+						singleNode = nodeService.getNodeFromSet(nodeSet, word);
 						singleNode.increaseLevel();
 					}
 					neighbourNodes.add(singleNode);
