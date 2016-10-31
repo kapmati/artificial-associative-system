@@ -30,7 +30,7 @@ public class TimeCounter {
 		return end;
 	}
 
-	public void showTime() {
+	public void showTime(String msg) {
 
 		LocalDateTime tempDateTime = LocalDateTime.from(start);
 
@@ -54,12 +54,13 @@ public class TimeCounter {
 
 		long miliSeconds = tempDateTime.until(end, ChronoUnit.MILLIS);
 
-		System.out.println( years + " years " +
-				months + " months " +
-				days + " days " +
-				hours + " hours " +
-				minutes + " minutes " +
-				seconds + " seconds " +
-				miliSeconds + " milisecond.");
+		System.out.println("TimeCounter (" + msg + "): " +
+				years + " years, " +
+				months + " months, " +
+				days + " days, " +
+				hours + " hours, " +
+				minutes + " minutes, " +
+				seconds + " seconds, " +
+				miliSeconds + " miliseconds.");
 	}
 }

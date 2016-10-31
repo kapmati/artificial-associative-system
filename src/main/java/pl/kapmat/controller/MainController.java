@@ -25,13 +25,21 @@ public class MainController {
 	private AasGraph aasGraph;
 
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
-		private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
-	//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences.txt";
+	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences_SHORT.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences.txt";
 	private static final Language LANGUAGE = Language.PL;
 
-	@RequestMapping("/")
+	@RequestMapping("/extend")
 	@ResponseBody
-	public String index() {
+	public String extend() {
+		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(PATH, LANGUAGE));
+		return "Main page - Artificial associative system";
+	}
+
+	@RequestMapping("/run")
+	@ResponseBody
+	public String run() {
 		aasGraph.run();
 		return "Main page - Artificial associative system";
 	}
@@ -41,5 +49,12 @@ public class MainController {
 	public String insertData() {
 		sentenceService.insertSentences(PATH, Language.PL);
 		return "File: " + PATH + "<br>Language: " + Language.PL;
+	}
+
+	@RequestMapping("/deleteAllSentences")
+	@ResponseBody
+	public String deleteAllSentences() {
+		sentenceService.deleteAllSentences();
+		return "Clear";
 	}
 }

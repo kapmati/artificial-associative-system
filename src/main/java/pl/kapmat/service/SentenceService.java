@@ -34,14 +34,21 @@ public class SentenceService {
 		return (List<Sentence>) sentenceDAO.findAll();
 	}
 
+	public void deleteAllSentences() {
+		sentenceDAO.deleteAll();
+	}
+
 	public void insertSentences(String path, Language lang) {
+		insertSentencesIntoDatabase(getSentencesAfterCorrection(path, lang));
+	}
+
+	public List<Sentence> getSentencesAfterCorrection(String path, Language lang) {
 		FileOperator fileOperator = new FileOperator();
 		List<Sentence> sentenceList = fileOperator.getSentencesFromTxt(path, lang);
 
 		sentenceList = deleteLastCharacter(sentenceList);
 		sentenceList = deleteSentencePartBeforeChar(sentenceList, '\t');
-
-		insertSentencesIntoDatabase(sentenceList);
+		return sentenceList;
 	}
 
 	public List<Sentence> deleteChars(List<Sentence> sentences, char[] charsToDelete) {

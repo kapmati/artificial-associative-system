@@ -16,4 +16,6 @@ import java.util.List;
 public interface SentenceDAO extends CrudRepository<Sentence, Integer> {
 
 	List<Sentence> findByLanguage(Language language);
+
+	void deleteAll();
 }

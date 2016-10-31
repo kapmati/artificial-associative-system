@@ -37,17 +37,37 @@ public class AasGraph {
 		timer.startCount();
 		buildGraph(sentences);
 		timer.endCount();
-		timer.showTime();
+		timer.showTime("Build graph");
 
 		timer.startCount();
 		nodeService.serializeSetOfNodes(nodeSet);
 		timer.endCount();
-		timer.showTime();
+		timer.showTime("Serialize graph");
 
 		timer.startCount();
 		Set<Node> newSet = nodeService.deserializeSetOfNodes();
 		timer.endCount();
-		timer.showTime();
+		timer.showTime("Deserialize graph");
+	}
+
+	public void extendGraph(List<Sentence> sentences) {
+		timer.startCount();
+		nodeSet = nodeService.deserializeSetOfNodes();
+		timer.endCount();
+		timer.showTime("Deserialize graph");
+
+		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*'};
+		sentences = sentenceService.deleteChars(sentences, charsToDelete);
+
+		//Enable graph progress tracking
+		runExecutionCheckerThread(sentences.size());
+
+		timer.startCount();
+		buildGraph(sentences);
+		timer.endCount();
+		timer.showTime("Extend graph [+" + sentences.size() + " sentences]");
+
+		nodeService.serializeSetOfNodes(nodeSet);
 	}
 
 	/*TODO
@@ -57,10 +77,14 @@ public class AasGraph {
 	private void buildGraph(List<Sentence> sentences) {
 		String[] words;
 		for (Sentence sentence : sentences) {
+			//Increment static value used to track building/extending graph progress
+			ExecutionChecker.index++;
+
 			words = sentence.getText().split(" ");
 			Node singleNode;
 			Set<Node> neighbourNodes = new LinkedHashSet<>();
 			for (String word : words) {
+				word = word.trim();
 				if (!word.equals("")) {
 					singleNode = new Node(word.toUpperCase());
 					//Check if word is new
@@ -77,6 +101,12 @@ public class AasGraph {
 		}
 	}
 
+	private void runExecutionCheckerThread(int size) {
+		Runnable runChecking = new ExecutionChecker(size);
+		Thread statusThread = new Thread(runChecking);
+		statusThread.start();
+	}
+
 	private void connectNeighbours(Set<Node> neighbourNodes) {
 		List<Node> nodesList = new ArrayList<>(neighbourNodes);
 		for (Node mainNode : nodesList) {
@@ -86,6 +116,5 @@ public class AasGraph {
 				}
 			}
 		}
-
 	}
 }
