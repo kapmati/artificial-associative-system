@@ -60,7 +60,7 @@ public class AasGraph {
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
 
 		//Enable graph progress tracking
-		runExecutionCheckerThread(sentences.size());
+		runGraphProgressCheckerThread(sentences.size());
 
 		timer.startCount();
 		buildGraph(sentences);
@@ -78,7 +78,7 @@ public class AasGraph {
 		String[] words;
 		for (Sentence sentence : sentences) {
 			//Increment static value used to track building/extending graph progress
-			ExecutionChecker.index++;
+			GraphProgressChecker.index++;
 
 			words = sentence.getText().split(" ");
 			Node singleNode;
@@ -101,8 +101,8 @@ public class AasGraph {
 		}
 	}
 
-	private void runExecutionCheckerThread(int size) {
-		Runnable runChecking = new ExecutionChecker(size);
+	private void runGraphProgressCheckerThread(int size) {
+		Runnable runChecking = new GraphProgressChecker(size);
 		Thread statusThread = new Thread(runChecking);
 		statusThread.start();
 	}

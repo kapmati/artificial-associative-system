@@ -7,12 +7,12 @@ import pl.kapmat.util.MathUtil;
  *
  * @author Mateusz Kaproń
  */
-public class ExecutionChecker implements Runnable {
+public class GraphProgressChecker implements Runnable {
 
 	public static int index = 0;
 	private double size = 0;
 
-	public ExecutionChecker(int size) {
+	public GraphProgressChecker(int size) {
 		this.size = size;
 	}
 
@@ -24,7 +24,7 @@ public class ExecutionChecker implements Runnable {
 					Thread.sleep(10000);
 					System.out.println("Graph building: " + MathUtil.roundDouble((index/size) * 100, 3) + "%");
 				}
-				System.out.println("Graph building : 100%");
+				System.out.println("Graph building: 100%");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
