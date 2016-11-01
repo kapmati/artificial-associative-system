@@ -17,7 +17,7 @@ public class NodeService {
 	private static String SERIALIZE_DATA_FILE_NAME = "setOfNodes.ser";
 
 	public Node getNodeFromSet(Set<Node> nodeSet, String word) {
-		return nodeSet.stream().filter(node -> node.getWord().equalsIgnoreCase(word)).findFirst().get();
+			return nodeSet.stream().filter(node -> node.getWord().equals(word.toUpperCase())).findFirst().get();
 	}
 
 	public void serializeSetOfNodes(Set<Node> nodeSet) {

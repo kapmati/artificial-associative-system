@@ -88,15 +88,23 @@ public class SentenceService {
 		Matcher digitMatcher;
 		for (Sentence sentence: sentences) {
 			digitMatcher = digitPattern.matcher(sentence.getText());
-			while (digitMatcher.find()) {
-				System.out.println(digitMatcher.group());
-			}
 			sentence.setText(digitMatcher.replaceAll(" <LICZBA> "));
 			//It is necessary to do it twice because regular expression does't detect numbers if they are next to each other
 			digitMatcher = digitPattern.matcher(sentence.getText());
-			while (digitMatcher.find()) {
-				System.out.println(digitMatcher.group());
-			}
+			sentence.setText(digitMatcher.replaceAll(" <LICZBA> "));
+		}
+
+		//If digit is first character in sentence
+		digitPattern = Pattern.compile("^-?\\d+\\s");
+		for (Sentence sentence: sentences) {
+			digitMatcher = digitPattern.matcher(sentence.getText());
+			sentence.setText(digitMatcher.replaceAll(" <LICZBA> "));
+		}
+
+		//If digit is last character in sentence
+		digitPattern = Pattern.compile("\\s-?\\d+$");
+		for (Sentence sentence: sentences) {
+			digitMatcher = digitPattern.matcher(sentence.getText());
 			sentence.setText(digitMatcher.replaceAll(" <LICZBA> "));
 		}
 	}

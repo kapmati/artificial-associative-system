@@ -9,7 +9,10 @@ import pl.kapmat.service.SentenceService;
 import pl.kapmat.util.GraphProgressChecker;
 import pl.kapmat.util.TimeCounter;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Artificial associative system main class
@@ -36,9 +39,12 @@ public class AasGraph {
 		List<Sentence> sentences = sentenceService.getAllSentences();
 
 		//Delete unnecessary characters
-		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"'};
+		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!'};
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
 		sentenceService.changeNumber(sentences);
+
+		//Enable graph progress tracking
+		runGraphProgressCheckerThread(sentences.size());
 
 		timer.startCount();
 		buildGraph(sentences);
@@ -62,7 +68,7 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
-		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"'};
+		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!'};
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
 		sentenceService.changeNumber(sentences);
 
@@ -105,6 +111,14 @@ public class AasGraph {
 			}
 			connectNeighbours(neighbourNodes);
 		}
+	}
+
+	public int readTest() {
+		timer.startCount();
+		Set<Node> newSet = nodeService.deserializeSetOfNodes();
+		timer.endCount();
+		timer.showTime("Deserialize graph");
+		return newSet.size();
 	}
 
 	private void connectNeighbours(LinkedHashSet<Node> neighbourNodes) {
