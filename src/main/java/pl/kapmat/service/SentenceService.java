@@ -22,10 +22,6 @@ public class SentenceService {
 	@Autowired
 	private SentenceDAO sentenceDAO;
 
-//	public void setDAO(SentenceDAO sentenceDAO) {
-//		this.sentenceDAO = sentenceDAO;
-//	}
-
 	private void insertSentencesIntoDatabase(List<Sentence> sentences) {
 		sentenceDAO.save(sentences);
 	}
@@ -46,7 +42,6 @@ public class SentenceService {
 		FileOperator fileOperator = new FileOperator();
 		List<Sentence> sentenceList = fileOperator.getSentencesFromTxt(path, lang);
 
-		sentenceList = deleteLastCharacter(sentenceList);
 		sentenceList = deleteSentencePartBeforeChar(sentenceList, '\t');
 		return sentenceList;
 	}
@@ -83,5 +78,12 @@ public class SentenceService {
 		return IntStream.range(0, sentences.size())
 				.mapToObj(i -> new Sentence(sentencesList.get(i), sentences.get(0).getLanguage()))
 				.collect(Collectors.toList());
+	}
+
+	public List<Sentence> changeNumber(List<Sentence> sentences) {
+		for (Sentence sentence: sentences) {
+			// TODO Zamienić liczby na <LICZBA>
+		}
+		return null;
 	}
 }

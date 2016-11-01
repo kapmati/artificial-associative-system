@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 public class Node implements Serializable {
 
 	private String word;
-	private int level;
-	private Map<Node, Integer> neighbourMap = new HashMap<>();
+	private int level = 0;
+	private Map<Node, Coefficient> neighbourMap = new HashMap<>();
 
 	public Node() {
 
@@ -46,17 +46,16 @@ public class Node implements Serializable {
 		this.level++;
 	}
 
-	public Map<Node, Integer> getNeighbourMap() {
+	public Map<Node, Coefficient> getNeighbourMap() {
 		return neighbourMap;
 	}
 
-	public void setNeighbourMap(Map<Node, Integer> neighbourMap) {
+	public void setNeighbourMap(Map<Node, Coefficient> neighbourMap) {
 		this.neighbourMap = neighbourMap;
 	}
 
-	public void addNeighbour(Node newNeighbour) {
-		//TODO Change rate
-		this.neighbourMap.put(newNeighbour, 0);
+	public void addNeighbour(Node newNeighbour, Coefficient coeff) {
+		this.neighbourMap.put(newNeighbour, coeff);
 	}
 
 	public List<Node> getNeighbourList() {

@@ -1,5 +1,7 @@
 package pl.kapmat.algorithm;
 
+import java.io.Serializable;
+
 /**
  * One class for two node coefficients:
  * 	1) synapticWeight
@@ -7,7 +9,7 @@ package pl.kapmat.algorithm;
  *
  * @author Mateusz Kaproń
  */
-public class Coefficient {
+public class Coefficient implements Serializable {
 
 	private double synapticWeight;
 	private double synapticEffectiveness;

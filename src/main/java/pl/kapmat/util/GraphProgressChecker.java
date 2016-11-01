@@ -1,6 +1,7 @@
-package pl.kapmat.algorithm;
+package pl.kapmat.util;
 
-import pl.kapmat.util.MathUtil;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Checks creating/extending graph progress
@@ -18,13 +19,14 @@ public class GraphProgressChecker implements Runnable {
 
 	@Override
 	public void run() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		if (size > 0) {
 			try {
 				while ((index/size)*100 <= 98) {
 					Thread.sleep(10000);
-					System.out.println("Graph building: " + MathUtil.roundDouble((index/size) * 100, 3) + "%");
+					System.out.println("[" + LocalDateTime.now().format(formatter) + "]" + " Graph progress: " + MathUtil.roundDouble((index/size) * 100, 3) + "%");
 				}
-				System.out.println("Graph building: 100%");
+				System.out.println("Graph progress: 100%");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

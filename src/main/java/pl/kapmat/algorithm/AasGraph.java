@@ -3,8 +3,10 @@ package pl.kapmat.algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.kapmat.model.Sentence;
+import pl.kapmat.service.CoefficientService;
 import pl.kapmat.service.NodeService;
 import pl.kapmat.service.SentenceService;
+import pl.kapmat.util.GraphProgressChecker;
 import pl.kapmat.util.TimeCounter;
 
 import java.util.*;
@@ -23,6 +25,9 @@ public class AasGraph {
 	@Autowired
 	private NodeService nodeService;
 
+	@Autowired
+	private CoefficientService coefficientService;
+
 	private Set<Node> nodeSet = new HashSet<>();
 	private TimeCounter timer = new TimeCounter();
 
@@ -31,7 +36,7 @@ public class AasGraph {
 		List<Sentence> sentences = sentenceService.getAllSentences();
 
 		//Delete unnecessary characters
-		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*'};
+		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?'};
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
 
 		timer.startCount();
@@ -56,8 +61,9 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
-		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*'};
+		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '?'};
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
+		sentences = sentenceService.changeNumber(sentences);
 
 		//Enable graph progress tracking
 		runGraphProgressCheckerThread(sentences.size());
@@ -76,13 +82,14 @@ public class AasGraph {
 	*/
 	private void buildGraph(List<Sentence> sentences) {
 		String[] words;
+		nodeSet.clear();
 		for (Sentence sentence : sentences) {
 			//Increment static value used to track building/extending graph progress
 			GraphProgressChecker.index++;
 
 			words = sentence.getText().split(" ");
 			Node singleNode;
-			Set<Node> neighbourNodes = new LinkedHashSet<>();
+			LinkedHashSet<Node> neighbourNodes = new LinkedHashSet<>();
 			for (String word : words) {
 				word = word.trim();
 				if (!word.equals("")) {
@@ -90,9 +97,11 @@ public class AasGraph {
 					//Check if word is new
 					if (!nodeSet.contains(singleNode)) {
 						nodeSet.add(singleNode);
+						singleNode.increaseLevel();
 					} else {
 						singleNode = nodeService.getNodeFromSet(nodeSet, word);
 						singleNode.increaseLevel();
+						coefficientService.updateCoefficients(singleNode);
 					}
 					neighbourNodes.add(singleNode);
 				}
@@ -101,20 +110,24 @@ public class AasGraph {
 		}
 	}
 
+	private void connectNeighbours(LinkedHashSet<Node> neighbourNodes) {
+		int firstIndex = 0, secondIndex = 0;
+		for (Node mainNode: neighbourNodes) {
+			firstIndex++;
+			for (Node otherNode: neighbourNodes) {
+				secondIndex++;
+				if (!mainNode.equals(otherNode) && firstIndex - secondIndex > 0) {
+					//Neighbours are added only with one direction
+					otherNode.addNeighbour(mainNode, coefficientService.countCoefficients(mainNode, firstIndex, otherNode, secondIndex));
+				}
+			}
+			secondIndex = 0;
+		}
+	}
+
 	private void runGraphProgressCheckerThread(int size) {
 		Runnable runChecking = new GraphProgressChecker(size);
 		Thread statusThread = new Thread(runChecking);
 		statusThread.start();
-	}
-
-	private void connectNeighbours(Set<Node> neighbourNodes) {
-		List<Node> nodesList = new ArrayList<>(neighbourNodes);
-		for (Node mainNode : nodesList) {
-			for (Node otherNode : nodesList) {
-				if (!mainNode.equals(otherNode)) {
-					mainNode.addNeighbour(otherNode);
-				}
-			}
-		}
 	}
 }
