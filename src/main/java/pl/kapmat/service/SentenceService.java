@@ -8,6 +8,8 @@ import pl.kapmat.model.Sentence;
 import pl.kapmat.util.FileOperator;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -80,10 +82,22 @@ public class SentenceService {
 				.collect(Collectors.toList());
 	}
 
-	public List<Sentence> changeNumber(List<Sentence> sentences) {
+	public void changeNumber(List<Sentence> sentences) {
+		// Regular expression: whitespace, minus (optional), al least one digit, whitespace
+		Pattern digitPattern = Pattern.compile("\\s-?\\d+\\s");
+		Matcher digitMatcher;
 		for (Sentence sentence: sentences) {
-			// TODO Zamienić liczby na <LICZBA>
+			digitMatcher = digitPattern.matcher(sentence.getText());
+			while (digitMatcher.find()) {
+				System.out.println(digitMatcher.group());
+			}
+			sentence.setText(digitMatcher.replaceAll(" <LICZBA> "));
+			//It is necessary to do it twice because regular expression does't detect numbers if they are next to each other
+			digitMatcher = digitPattern.matcher(sentence.getText());
+			while (digitMatcher.find()) {
+				System.out.println(digitMatcher.group());
+			}
+			sentence.setText(digitMatcher.replaceAll(" <LICZBA> "));
 		}
-		return null;
 	}
 }

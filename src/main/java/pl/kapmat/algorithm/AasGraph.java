@@ -36,8 +36,9 @@ public class AasGraph {
 		List<Sentence> sentences = sentenceService.getAllSentences();
 
 		//Delete unnecessary characters
-		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?'};
+		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"'};
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
+		sentenceService.changeNumber(sentences);
 
 		timer.startCount();
 		buildGraph(sentences);
@@ -61,9 +62,9 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
-		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '?'};
+		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"'};
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
-		sentences = sentenceService.changeNumber(sentences);
+		sentenceService.changeNumber(sentences);
 
 		//Enable graph progress tracking
 		runGraphProgressCheckerThread(sentences.size());
@@ -76,10 +77,6 @@ public class AasGraph {
 		nodeService.serializeSetOfNodes(nodeSet);
 	}
 
-	/*TODO
-		2) Podstawienie specjalnego słowa za liczbę lub ujednolicenie liczb
-		3) Sprawdzić czy wstawiane są jedynie unikatowe węzły i czy ich liczba się zgadza
-	*/
 	private void buildGraph(List<Sentence> sentences) {
 		String[] words;
 		nodeSet.clear();
