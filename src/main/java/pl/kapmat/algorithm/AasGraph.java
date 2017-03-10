@@ -2,6 +2,7 @@ package pl.kapmat.algorithm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.kapmat.model.Language;
 import pl.kapmat.model.Sentence;
 import pl.kapmat.service.CoefficientService;
 import pl.kapmat.service.NodeService;
@@ -9,10 +10,7 @@ import pl.kapmat.service.SentenceService;
 import pl.kapmat.util.GraphProgressChecker;
 import pl.kapmat.util.TimeCounter;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Artificial associative system main class
@@ -33,13 +31,13 @@ public class AasGraph {
 
 	private Set<Node> nodeSet = new HashSet<>();
 	private TimeCounter timer = new TimeCounter();
+	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!'};
 
 	public void run() {
 		//Load sentences from db
 		List<Sentence> sentences = sentenceService.getAllSentences();
 
 		//Delete unnecessary characters
-		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!'};
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
 		sentenceService.changeNumber(sentences);
 
@@ -68,7 +66,6 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
-		char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!'};
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
 		sentenceService.changeNumber(sentences);
 
@@ -140,5 +137,23 @@ public class AasGraph {
 		Runnable runChecking = new GraphProgressChecker(size);
 		Thread statusThread = new Thread(runChecking);
 		statusThread.start();
+	}
+
+	public void correctContext(String inputSentence) {
+		Sentence sentence = new Sentence(inputSentence, Language.PL);
+		sentence = sentenceService.deleteChars(sentence, charsToDelete);
+
+		String[] words = sentence.getText().split(" ");
+		List<Node> inputNodes = new ArrayList<>();
+		for (String word : words) {
+			Node node = new Node(word.toUpperCase());
+			if (nodeSet.contains(node)) {
+				inputNodes.add(nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get());
+			}
+		}
+
+		//TODO Tylko testowanie metod
+		Map<Node, Coefficient> bestNodes = nodeService.getBestNeighbours(inputNodes.get(0));
+		Map<Node, Double> bestJointNodes = nodeService.getBestJointNeighbours(inputNodes);
 	}
 }

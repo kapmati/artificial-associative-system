@@ -1,9 +1,11 @@
 package pl.kapmat.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import pl.kapmat.algorithm.AasGraph;
 import pl.kapmat.model.Language;
 import pl.kapmat.service.SentenceService;
@@ -22,38 +24,49 @@ public class MainController {
 	@Autowired
 	private AasGraph aasGraph;
 
-//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
+	@Autowired
+	public MainController(SentenceService sentenceService, AasGraph aasGraph) {
+		this.sentenceService = sentenceService;
+		this.aasGraph = aasGraph;
+	}
+
+	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/monkeyTest.txt";
+	//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
-	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences_SHORT.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences_SHORT.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/test.txt";
 	private static final Language LANGUAGE = Language.PL;
 
-	@RequestMapping("/extend")
-	@ResponseBody
-	public String extend() {
+	@RequestMapping(value = "/extend", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> extend() {
 		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(PATH, LANGUAGE));
-		return "Main page - Artificial associative system";
+		return new ResponseEntity<>("Main page - Artificial associative system", HttpStatus.OK);
 	}
 
-	@RequestMapping("/run")
-	@ResponseBody
-	public String run() {
+	@RequestMapping(value = "/run", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> run() {
 		aasGraph.run();
-		return "Main page - Artificial associative system";
+		return new ResponseEntity<>("Main page - Artificial associative system", HttpStatus.OK);
 	}
 
-	@RequestMapping("/insertData")
-	@ResponseBody
-	public String insertData() {
+	@RequestMapping(value = "/insertData", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> insertData() {
 		sentenceService.insertSentences(PATH, Language.PL);
-		return "File: " + PATH + "<br>Language: " + Language.PL;
+		return new ResponseEntity<>("File: " + PATH + "<br>Language: " + Language.PL, HttpStatus.OK);
 	}
 
-	@RequestMapping("/deleteAllSentences")
-	@ResponseBody
-	public String deleteAllSentences() {
+	@RequestMapping(value = "/deleteAllSentences", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> deleteAllSentences() {
 		sentenceService.deleteAllSentences();
-		return "Clear";
+		return new ResponseEntity<>("Clear", HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/context", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> correctConext() {
+		//TODO przerobić endpointa
+		String input = "I have a dog";
+		aasGraph.correctContext(input);
+		return new ResponseEntity<>("Contex", HttpStatus.OK);
 	}
 }
