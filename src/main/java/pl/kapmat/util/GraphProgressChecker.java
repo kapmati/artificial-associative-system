@@ -12,6 +12,7 @@ public class GraphProgressChecker implements Runnable {
 
 	public static int index = 0;
 	private double size = 0;
+	public static boolean breakLoop = false;
 
 	public GraphProgressChecker(int size) {
 		this.size = size;
@@ -22,11 +23,18 @@ public class GraphProgressChecker implements Runnable {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		if (size > 0) {
 			try {
-				while ((index/size)*100 <= 98) {
-					Thread.sleep(10000);
+				while ((index/size)*100 <= 99) {
+					if (breakLoop) {
+						break;
+					}
+					Thread.sleep(5000);
 					System.out.println("[" + LocalDateTime.now().format(formatter) + "]" + " Graph progress: " + MathUtil.roundDouble((index/size) * 100, 3) + "%");
 				}
-				System.out.println("Graph progress: 100%");
+				if (breakLoop) {
+					System.out.println("Break extending!!");
+				} else {
+					System.out.println("Graph progress: 100%!!");
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

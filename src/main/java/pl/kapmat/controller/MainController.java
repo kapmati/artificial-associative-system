@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.kapmat.algorithm.AasGraph;
 import pl.kapmat.model.Language;
 import pl.kapmat.service.SentenceService;
+import pl.kapmat.util.GraphProgressChecker;
 
 /**
  * Main controller
@@ -30,9 +32,9 @@ public class MainController {
 		this.aasGraph = aasGraph;
 	}
 
-	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/monkeyTest.txt";
-	//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
-//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/monkeyTest.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
+	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences_SHORT.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/test.txt";
@@ -62,11 +64,15 @@ public class MainController {
 		return new ResponseEntity<>("Clear", HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/context", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> correctConext() {
-		//TODO przerobić endpointa
-		String input = "I have a dog";
-		aasGraph.correctContext(input);
-		return new ResponseEntity<>("Contex", HttpStatus.OK);
+	@RequestMapping(value = "/textAnalysis", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<?> textAnalysis(@RequestParam("inputText") String inputText) throws InterruptedException {
+		aasGraph.readGraph("60k.ser");
+		return new ResponseEntity<>(aasGraph.textAnalysis(inputText), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/breakExtending", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<?> breakExtending() throws InterruptedException {
+		GraphProgressChecker.breakLoop = true;
+		return new ResponseEntity<>("Break extending", HttpStatus.OK);
 	}
 }

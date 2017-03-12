@@ -19,14 +19,12 @@ import java.util.stream.Collectors;
 @Service
 public class NodeService {
 
-	private static String SERIALIZE_DATA_FILE_NAME = "setOfNodes.ser";
-
 	public Node getNodeFromSet(Set<Node> nodeSet, String word) {
 		return nodeSet.stream().filter(node -> node.getWord().equals(word.toUpperCase())).findFirst().get();
 	}
 
-	public void serializeSetOfNodes(Set<Node> nodeSet) {
-		try (OutputStream file = new FileOutputStream(SERIALIZE_DATA_FILE_NAME);
+	public void serializeSetOfNodes(Set<Node> nodeSet, String graphFileName) {
+		try (OutputStream file = new FileOutputStream("src/main/resources/" + graphFileName);
 			 OutputStream buffer = new BufferedOutputStream(file);
 			 ObjectOutput output = new ObjectOutputStream(buffer);
 		) {
@@ -36,14 +34,13 @@ public class NodeService {
 		}
 	}
 
-	public Set<Node> deserializeSetOfNodes() {
+	public Set<Node> deserializeSetOfNodes(String graphFileName) {
 		Set<Node> setOfNodes = null;
-		try (InputStream file = new FileInputStream(SERIALIZE_DATA_FILE_NAME);
+		try (InputStream file = new FileInputStream("src/main/resources/" + graphFileName);
 			 InputStream buffer = new BufferedInputStream(file);
 			 ObjectInput input = new ObjectInputStream(buffer);
 		) {
 			setOfNodes = (Set<Node>) input.readObject();
-
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}

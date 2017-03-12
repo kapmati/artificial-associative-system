@@ -9,18 +9,28 @@
 		<input type="submit" value="Run" />
 	</form>
 	<br>
-	<form action="http://localhost:8080/run">
-		<input type="submit" value="Run" />
-	</form>
+	<br>
+	<input name="extend" onclick="extend()" type="button" value="Extend" />
 	<br>
 	<br>
-	<form action="http://localhost:8080/extend">
-		<input type="submit" value="Extend" />
-	</form>
+	<input name="extend" onclick="breakExtending()" type="button" value="Break extending" />
 	<br>
 	<br>
 	<form action="http://localhost:8080/context">
 		<input type="submit" value="Context" />
 	</form>
+
+	<br>
+	<br>
+	<div>
+		<textarea id="input" rows="12" cols="50"></textarea>
+		<textarea id="output" rows="12" cols="50" readonly></textarea>
+	</div>
+
+	<br>
+	<input name="buttonExecute" onclick="execute(document.getElementById('input').value)" type="button" value="Analiza tekstu" />
+	<br>
+	<br>
+	<script src="main.js"></script>
 </body>
 </html>
