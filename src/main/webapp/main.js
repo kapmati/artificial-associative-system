@@ -13,20 +13,23 @@ function execute(text) {
     						var output = null;
     						var content = null;
     						var bestNeighbour = null;
+    						var similarWords = null;
     						console.log(responseJSON);
     						for (var i = 0; i < responseJSON.length; i++) {
     							if (output == null) {
     								output = responseJSON[0].input + '\n';
     								content = responseJSON[0].notFound + '\n';
     								bestNeighbour = responseJSON[0].bestNeighbour + '\n';
+    								similarWords = responseJSON[0].similarWords + '\n';
     							} else {
     								output += responseJSON[i].input + '\n';
     								content += responseJSON[i].notFound + '\n';
     								bestNeighbour += responseJSON[i].bestNeighbour + '\n';
+    								similarWords += responseJSON[i].similarWords + '\n';
     							}
 							}
 							document.getElementById("output").innerHTML = 'Input:\n' + output + '\nNot found:\n' + content +
-								'\nBest neighbours:\n' + bestNeighbour;
+								'\nBest neighbours:\n' + bestNeighbour + '\nSimilar words:\n' + similarWords;
     					}
 			}
 
@@ -61,9 +64,10 @@ function breakExtending() {
         xhr.send();
 }
 
-function extend() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', "http://localhost:8080/extend", true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.send();
-}
+//function extend() {
+//        var xhr = new XMLHttpRequest();
+//        xhr.open('GET', "http://localhost:8080/extend/", true);
+//        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+//        console.log(document.getElementsByName("extendBook"));
+//        xhr.send(document.getElementsByName('extendBook').innerHTML);
+//}

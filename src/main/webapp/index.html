@@ -5,12 +5,16 @@
 	<title>Title</title>
 </head>
 <body>
-	<form action="http://localhost:8080/run">
+	<form action="http://localhost:8080/run" method="get">
+		Book: <input type="text" name="book"><br>
 		<input type="submit" value="Run" />
 	</form>
 	<br>
 	<br>
-	<input name="extend" onclick="extend()" type="button" value="Extend" />
+	<form action="http://localhost:8080/extend" method="get">
+		Book: <input type="text" name="extendBook"><br>
+		<input type="submit" value="Extend" />
+	</form>
 	<br>
 	<br>
 	<input name="extend" onclick="breakExtending()" type="button" value="Break extending" />

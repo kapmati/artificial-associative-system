@@ -8,6 +8,7 @@ import pl.kapmat.model.Sentence;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -35,5 +36,30 @@ public class FileOperator {
 			System.exit(-1);
 		}
 		return null;
+	}
+
+	public List<Sentence> getSentencesFromTxtBook(String filePath, Language language) {
+		byte[] encodedFile = null;
+		try {
+			encodedFile = Files.readAllBytes(Paths.get(filePath));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String wholeBook = new String(encodedFile);
+
+		wholeBook = wholeBook.replaceAll("\\n", " ");
+		wholeBook = wholeBook.replaceAll("\\?", "\\. ");
+		wholeBook = wholeBook.replaceAll("!", "\\. ");
+		wholeBook = wholeBook.replaceAll(":", "\\.");
+		wholeBook = wholeBook.replaceAll("–","\\.");
+		wholeBook = wholeBook.replaceAll("-","\\.");
+		String[] sentences = wholeBook.split("\\.");
+		List<Sentence> sentencesList = new ArrayList<>();
+		for (String s : sentences) {
+			if (!s.equals(" ")) {
+				sentencesList.add(new Sentence(s, language));
+			}
+		}
+		return sentencesList;
 	}
 }

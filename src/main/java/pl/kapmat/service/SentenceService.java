@@ -47,7 +47,7 @@ public class SentenceService {
 
 	public List<Sentence> getSentencesAfterCorrection(String path, Language lang) {
 		FileOperator fileOperator = new FileOperator();
-		List<Sentence> sentenceList = fileOperator.getSentencesFromTxt(path, lang);
+		List<Sentence> sentenceList = fileOperator.getSentencesFromTxtBook(path, lang);
 
 		sentenceList = deleteSentencePartBeforeChar(sentenceList, '\t');
 		return sentenceList;

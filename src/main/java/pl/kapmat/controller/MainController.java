@@ -32,23 +32,25 @@ public class MainController {
 		this.aasGraph = aasGraph;
 	}
 
-//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/monkeyTest.txt";
+	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/Books/W_pustyni_i_w_puszczy.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/Books/Opowieść_wigilijna_(1925)-całość.txt";
+
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
-	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
+//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences_SHORT.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/test.txt";
 	private static final Language LANGUAGE = Language.PL;
 
 	@RequestMapping(value = "/extend", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> extend() {
-		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(PATH, LANGUAGE));
+	public ResponseEntity<?> extend(@RequestParam("extendBook") String extendBook) {
+		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + extendBook, LANGUAGE));
 		return new ResponseEntity<>("Main page - Artificial associative system", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/run", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> run() {
-		aasGraph.run();
+	public ResponseEntity<?> run(@RequestParam("book") String book) {
+		aasGraph.run(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + book, LANGUAGE);
 		return new ResponseEntity<>("Main page - Artificial associative system", HttpStatus.OK);
 	}
 

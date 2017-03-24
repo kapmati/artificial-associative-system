@@ -31,11 +31,11 @@ public class AasGraph {
 
 	private Set<Node> nodeSet = new HashSet<>();
 	private TimeCounter timer = new TimeCounter();
-	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!'};
+	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!','«','↑','*','.'};
 
-	public void run() {
-		//Load sentences from db
-		List<Sentence> sentences = sentenceService.getAllSentences();
+	public void run(String path, Language lang) {
+		//Load sentences from file
+		List<Sentence> sentences = sentenceService.getSentencesAfterCorrection(path, lang);
 
 		//Delete unnecessary characters
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
@@ -50,19 +50,20 @@ public class AasGraph {
 		timer.showTime("Build graph");
 
 		timer.startCount();
-		nodeService.serializeSetOfNodes(nodeSet, "graph.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "books.ser");
 		timer.endCount();
 		timer.showTime("Serialize graph");
 
 		timer.startCount();
-		Set<Node> newSet = nodeService.deserializeSetOfNodes("graph.ser");
+		Set<Node> newSet = nodeService.deserializeSetOfNodes("books.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
+		System.out.println("NodeSet size:" + nodeSet.size());
 	}
 
 	public void extendGraph(List<Sentence> sentences) {
 		timer.startCount();
-		nodeSet = nodeService.deserializeSetOfNodes("60k.ser");
+		nodeSet = nodeService.deserializeSetOfNodes("books.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
@@ -77,38 +78,39 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Extend graph [+" + sentences.size() + " sentences]");
 
-		nodeService.serializeSetOfNodes(nodeSet, "graph.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "books.ser");
+		System.out.println("NodeSet size:" + nodeSet.size());
 	}
 
 	private void buildGraph(List<Sentence> sentences) {
 		String[] words;
-//		nodeSet.clear();
 		for (Sentence sentence : sentences) {
-			while (!GraphProgressChecker.breakLoop) {
-				//Increment static value used to track building/extending graph progress
-				GraphProgressChecker.index++;
-
-				words = sentence.getText().split(" ");
-				Node singleNode;
-				LinkedHashSet<Node> neighbourNodes = new LinkedHashSet<>();
-				for (String word : words) {
-					word = word.trim();
-					if (!word.equals("")) {
-						singleNode = new Node(word.toUpperCase());
-						//Check if word is new
-						if (!nodeSet.contains(singleNode)) {
-							nodeSet.add(singleNode);
-							singleNode.increaseLevel();
-						} else {
-							singleNode = nodeService.getNodeFromSet(nodeSet, word);
-							singleNode.increaseLevel();
-							coefficientService.updateCoefficients(singleNode);
-						}
-						neighbourNodes.add(singleNode);
-					}
-				}
-				connectNeighbours(neighbourNodes);
+			if (GraphProgressChecker.breakLoop) {
+				break;
 			}
+			//Increment static value used to track building/extending graph progress
+			GraphProgressChecker.index++;
+
+			words = sentence.getText().split(" ");
+			Node singleNode;
+			LinkedHashSet<Node> neighbourNodes = new LinkedHashSet<>();
+			for (String word : words) {
+				word = word.trim();
+				if (!word.equals("")) {
+					singleNode = new Node(word.toUpperCase());
+					//Check if word is new
+					if (!nodeSet.contains(singleNode)) {
+						nodeSet.add(singleNode);
+						singleNode.increaseLevel();
+					} else {
+						singleNode = nodeService.getNodeFromSet(nodeSet, word);
+						singleNode.increaseLevel();
+						coefficientService.updateCoefficients(singleNode);
+					}
+					neighbourNodes.add(singleNode);
+				}
+			}
+			connectNeighbours(neighbourNodes);
 		}
 		GraphProgressChecker.breakLoop = false;
 	}
@@ -165,11 +167,23 @@ public class AasGraph {
 			String[] words = sentence.getText().split(" ");
 			List<String> notFoundList = new ArrayList<>();
 			List<String> bestNextList = new ArrayList<>();
+			List<String> similarWordList = new ArrayList<>();
 			for (int i=0; i<words.length; i++) {
 				Node node = new Node(words[i].toUpperCase());
+
 				if (nodeSet.contains(node)) {
 					inputNodes.add(nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get());
 				} else {
+					List<Node> similarNodes = nodeService.similarWord(node, nodeSet);
+					String similar = null;
+					for (Node n : similarNodes) {
+						if (similar != null) {
+							similar = similar + ", " + n.getWord();
+						} else {
+							similar = n.getWord();
+						}
+					}
+					similarWordList.add(similar + "|\n\n");
 					if (i > 0) {
 						Node oldNode = new Node(words[i-1].toUpperCase());
 						Map<Node, Coefficient> bestNextNodes = nodeService.getBestNeighbours(nodeSet.stream().filter(n -> n.getWord().equals(oldNode.getWord())).findFirst().orElse(new Node("!!!")));
@@ -180,9 +194,10 @@ public class AasGraph {
 					}
 				}
 			}
+			responseMap.put("similarWords", similarWordList);
 			responseMap.put("notFound", notFoundList);
 			responseMap.put("bestNeighbour", bestNextList);
-			//TODO dopisac funkcję szukająca podobne wyrazy !!!
+
 			responseList.add(responseMap);
 		}
 		if (inputNodes.size() > 0) {
