@@ -191,6 +191,14 @@ public class AasGraph {
 						}
 					}
 					similarWordList.add(similar + "|\n\n");
+					if (i > 0) {
+						Node oldNode = new Node(words[i-1].toUpperCase());
+						Map<Node, Coefficient> bestNextNodes = nodeService.getBestNeighbours(nodeSet.stream().filter(n -> n.getWord().equals(oldNode.getWord())).findFirst().orElse(new Node("!!!")));
+						for (Map.Entry next : bestNextNodes.entrySet()) {
+							bestNextList.add(((Node)next.getKey()).getWord());
+						}
+						notFoundList.add(words[i]);
+					}
 				}
 			}
 			responseMap.put("similarWords", similarWordList);

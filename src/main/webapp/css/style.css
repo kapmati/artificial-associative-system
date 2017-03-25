@@ -1,0 +1,26 @@
+#input {
+	width: auto;
+	height: 100px;
+	padding: 10px;
+	background-color: #444;
+	color: white;
+	font-size: 14px;
+	font-family: monospace;
+	overflow: auto;
+	text-decoration:none;
+}
+
+#output {
+	width: auto;
+	height: 100px;
+	padding: 10px;
+	background-color: #444;
+	color: white;
+	font-size: 14px;
+	font-family: monospace;
+	overflow: auto;
+}
+
+.wrongWord {
+	color: red;
+}

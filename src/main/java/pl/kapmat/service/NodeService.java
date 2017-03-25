@@ -80,7 +80,7 @@ public class NodeService {
 			}
 		}
 
-		//Filter all neighbour -> partOfWord
+		//Filter all neighbour which starts with @partOfWord
 		return bestNodesMap.entrySet().stream()
 				.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

@@ -1,0 +1,8 @@
+{
+	"name": "artificial-associative-system",
+	"autor": "Mateusz Kaproń",
+	"version": "1.0.0",
+	"dependencies": {
+		"bower": "^1.7.2"
+	}
+}
