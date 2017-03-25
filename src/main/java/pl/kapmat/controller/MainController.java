@@ -72,6 +72,12 @@ public class MainController {
 		return new ResponseEntity<>(aasGraph.textAnalysis(inputText), HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/nextWord", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<?> nextWord(@RequestParam("inputText") String inputText) throws InterruptedException {
+		aasGraph.readGraph("60k.ser");
+		return new ResponseEntity<>(aasGraph.findNextWord(inputText), HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "/breakExtending", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> breakExtending() throws InterruptedException {
 		GraphProgressChecker.breakLoop = true;

@@ -57,37 +57,61 @@ public class NodeService {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
-	public Map<Node, Double> getBestJointNeighbours(List<Node> nodes) {
-		Map<Node, Double> bestNodes = new HashMap<>();
-		for (Node node : nodes) {
-			for (Map.Entry entry : node.getNeighbourMap().entrySet()) {
-				if (!bestNodes.containsKey(entry.getKey())) {
-					bestNodes.put((Node) entry.getKey(), ((Coefficient) entry.getValue()).getSynapticWeight());
-				} else {
-					bestNodes.put((Node) entry.getKey(), bestNodes.get(entry.getKey()) + ((Coefficient) entry.getValue()).getSynapticWeight());
+	public Map<Node, Double> getBestNextWords(List<Node> nodeList, String partOfWord) {
+		Node lastNode = nodeList.get(nodeList.size()-1);
+		Map<Node, Coefficient> lastNodeNeighbours = lastNode.getNeighbourMap();
+		Map<Node, Double> bestNodesMap = new HashMap<>();
+		for (Map.Entry<Node, Coefficient> nodeEntry : lastNodeNeighbours.entrySet()) {
+			bestNodesMap.put(nodeEntry.getKey(), nodeEntry.getValue().getSynapticWeight());
+		}
+		for (Node node : nodeList) {
+			if (!node.equals(lastNode)) {
+				for (Map.Entry<Node, Coefficient> nodeEntry : node.getNeighbourMap().entrySet()) {
+					if (bestNodesMap.containsKey(nodeEntry.getKey())) {
+						for (Map.Entry<Node, Double> bestNode : bestNodesMap.entrySet()) {
+							if (bestNode.getKey().equals(nodeEntry.getKey())) {
+								bestNodesMap.put(bestNode.getKey(), bestNodesMap.get(bestNode.getKey()) + nodeEntry.getValue().getSynapticWeight());
+								break;
+							}
+						}
+
+					}
 				}
 			}
 		}
-		return bestNodes;
+
+		//Filter all neighbour -> partOfWord
+		return bestNodesMap.entrySet().stream()
+				.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public List<Node> similarWord(Node node, Set<Node> candidates) {
 		String word = node.getWord();
 		char[] wordArray = word.toCharArray();
 		int amountOfSameLetter;
+		int samePosition;
 		Map<Node, Integer> similarityMap = new HashMap<>();
+		Map<Node, Integer> positionMap = new HashMap<>();
 		for (Node n : candidates) {
-			char[] candidateArray = n.getWord().toCharArray();
-			amountOfSameLetter = 0;
-			for (char wordChar : wordArray) {
-				for (char candidateChar : candidateArray) {
-					if (wordChar == candidateChar) {
-						amountOfSameLetter++;
-						break;
+			if (!n.getWord().equals(node.getWord())) {
+				char[] candidateArray = n.getWord().toCharArray();
+				amountOfSameLetter = 0;
+				samePosition = 0;
+				for (int i = 0; i < wordArray.length; i++) {
+					for (int j = 0; j < candidateArray.length; j++) {
+						if (wordArray[i] == candidateArray[j]) {
+							if (i == j) {
+								samePosition++;
+							}
+							amountOfSameLetter++;
+							break;
+						}
 					}
 				}
+				positionMap.put(n, samePosition);
+				similarityMap.put(n, amountOfSameLetter);
 			}
-			similarityMap.put(n, amountOfSameLetter);
 		}
 		int maxValue = similarityMap.entrySet().stream().max((e1, e2) -> e1.getValue() > e2.getValue() ? 1 : -1).get().getValue();
 
@@ -96,9 +120,15 @@ public class NodeService {
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
 
+		int maxPosition = positionMap.entrySet().stream().max((e1, e2) -> e1.getValue() > e2.getValue() ? 1 : -1).get().getValue();
+		List<Node> positionList = positionMap.entrySet().stream()
+				.filter(e -> e.getValue().equals(maxPosition) && e.getKey().getWord().length() <= word.length() + 2)
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toList());
+
 		Comparator<Node> wordComparator = Comparator.comparing(Node::getWord);
 		Collections.sort(similarityList, wordComparator);
-
+		Collections.sort(positionList, wordComparator);
 
 		//Słowa o takiej samej pierwszej literze
 		List<Node> secondPart = similarityList.stream()
@@ -112,12 +142,12 @@ public class NodeService {
 
 		List<Node> result = new ArrayList<>();
 		result.addAll(bestPart);
-		similarityList.removeAll(secondPart);
-		secondPart.removeAll(bestPart);
+		positionList.removeAll(bestPart);
+		result.addAll(positionList);
+		secondPart.removeAll(result);
 		result.addAll(secondPart);
+		similarityList.removeAll(result);
 		result.addAll(similarityList);
-
-		//Sprawdzać pozycję litery, jeśli taka sama to przyznawać punkty i je zliczać
 
 		return result;
 	}

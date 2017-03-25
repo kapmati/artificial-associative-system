@@ -27,12 +27,15 @@
 	<br>
 	<br>
 	<div>
-		<textarea id="input" rows="12" cols="50"></textarea>
-		<textarea id="output" rows="12" cols="50" readonly></textarea>
+		<textarea id="input" rows="18" cols="30"></textarea>
+		<textarea id="output" rows="18" cols="120" readonly></textarea>
 	</div>
 
 	<br>
 	<input name="buttonExecute" onclick="execute(document.getElementById('input').value)" type="button" value="Analiza tekstu" />
+	<br>
+	<br>
+	<input name="buttonExecute" onclick="nextWord(document.getElementById('input').value)" type="button" value="Kolejny wyraz" />
 	<br>
 	<br>
 	<script src="main.js"></script>

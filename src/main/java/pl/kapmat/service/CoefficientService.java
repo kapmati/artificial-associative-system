@@ -33,7 +33,7 @@ public class CoefficientService {
 		for (Coefficient coeff : node.getNeighbourMap().values()) {
 			double sE = coeff.getSynapticEffectiveness();
 			double sW = (2 * sE) / (node.getLevel() + sE);
-			coeff.setSynapticWeight(MathUtil.roundDouble(sW,8));
+			coeff.setSynapticWeight(MathUtil.roundDouble(sW,10));
 		}
 	}
 }
