@@ -1,0 +1,35 @@
+<div ng-controller="mainPanelController">
+	<form action="http://localhost:8080/run" method="get">
+		Book: <input type="text" name="book"><br>
+		<input type="submit" value="Run"/>
+	</form>
+	<br>
+	<br>
+	<form action="http://localhost:8080/extend" method="get">
+		Book: <input type="text" name="extendBook"><br>
+		<input type="submit" value="Extend"/>
+	</form>
+	<br>
+	<br>
+	<input name="extend" onclick="breakExtending()" type="button" value="Break extending"/>
+	<br>
+	<br>
+	<form action="http://localhost:8080/context">
+		<input type="submit" value="Context"/>
+	</form>
+
+	<br>
+	<br>
+	<div id="input" contenteditable=true spellcheck=false></div>
+	<br>
+	<div id="output"></div>
+	<br>
+	<input name="buttonExecute" onclick="execute(document.getElementById('input').value)" type="button"
+		   value="Analiza tekstu"/>
+	<br>
+	<br>
+	<input name="buttonExecute" onclick="nextWord(document.getElementById('input').value)" type="button"
+		   value="Kolejny wyraz"/>
+	<br>
+	<br>
+</div>

@@ -5,9 +5,11 @@ function execute(text) {
 	xhr.send('inputText=' + text);
 	var response = null;
 	xhr.onreadystatechange = function () {
-		if (xhr.readyState == 4)
-			if (xhr.status == 200)
+		if (xhr.readyState == 4) {
+			if (xhr.status == 200) {
 				response = xhr.responseText;
+			}
+		}
 		if (response != null) {
 			var responseJSON = JSON.parse(response);
 			var output = null;
@@ -39,9 +41,11 @@ function nextWord(text) {
 	xhr.send('inputText=' + text);
 	var response = null;
 	xhr.onreadystatechange = function () {
-		if (xhr.readyState == 4)
-			if (xhr.status == 200)
+		if (xhr.readyState == 4) {
+			if (xhr.status == 200) {
 				response = xhr.responseText;
+			}
+		}
 		if (response != null) {
 			var responseJSON = JSON.parse(response);
 			var words = "";
@@ -55,39 +59,9 @@ function nextWord(text) {
 	}
 }
 
-//function extend() {
-//    var response = null;
-//    while(response != 100) {
-//        var xhr = new XMLHttpRequest();
-//        xhr.open('GET', "http://localhost:8080/extend", true);
-//        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-//        xhr.send();
-//    	response = null;
-//        xhr.onreadystatechange = function() {
-//        	if (xhr.readyState == 4) {
-//        	    if (xhr.status == 200) {
-//        	        response = xhr.responseText;
-//        	        if (response != null) {
-//        	            document.getElementById("processBar").innerHTML = response;
-//        	        }
-//        	    }
-//        	}
-//        }
-//
-//    }
-//}
-
 function breakExtending() {
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', "http://localhost:8080/breakExtending", true);
 	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 	xhr.send();
 }
-
-//function extend() {
-//        var xhr = new XMLHttpRequest();
-//        xhr.open('GET', "http://localhost:8080/extend/", true);
-//        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-//        console.log(document.getElementsByName("extendBook"));
-//        xhr.send(document.getElementsByName('extendBook').innerHTML);
-//}

@@ -1,44 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="aas">
 <head>
 	<meta charset="UTF-8">
-	<title>Title</title>
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-</head>
-<body>
-	<form action="http://localhost:8080/run" method="get">
-		Book: <input type="text" name="book"><br>
-		<input type="submit" value="Run" />
-	</form>
-	<br>
-	<br>
-	<form action="http://localhost:8080/extend" method="get">
-		Book: <input type="text" name="extendBook"><br>
-		<input type="submit" value="Extend" />
-	</form>
-	<br>
-	<br>
-	<input name="extend" onclick="breakExtending()" type="button" value="Break extending" />
-	<br>
-	<br>
-	<form action="http://localhost:8080/context">
-		<input type="submit" value="Context" />
-	</form>
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+	<meta http-equiv="Pragma" content="no-cache"/>
+	<meta http-equiv="Expires" content="0"/>
 
-	<br>
-	<br>
-	<div id="input" contenteditable=true spellcheck=false></div>
-	<br>
-	<div id="output"></div>
-	<br>
-	<input name="buttonExecute" onclick="execute(document.getElementById('input').value)" type="button" value="Analiza tekstu" />
-	<br>
-	<br>
-	<input name="buttonExecute" onclick="nextWord(document.getElementById('input').value)" type="button" value="Kolejny wyraz" />
-	<br>
-	<br>
-	<script src="js/scripts/main.js"></script>
-	<script src="js/scripts/wordChecker.js"></script>
-	<script src="js/scripts/rest.js"></script>
+	<title>Artificial assocaitive system</title>
+
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+</head>
+<body ng-app="aas">
+
+<div ng-view></div>
+
+<!-- 3rd Party Libraries -->
+<script src="./js/lib/jquery/dist/jquery.js" type="text/javascript"></script>
+<script src="./js/lib/angular/angular.js" type="text/javascript"></script>
+<script src="./js/lib/angular-resource/angular-resource.js" type="text/javascript"></script>
+<script src="./js/lib/angular-route/angular-route.js" type="text/javascript"></script>
+
+<script src="./js/app.js" type="text/javascript"></script>
+<script src="./js/scripts/main.js" type="text/javascript"></script>
+<script src="js/scripts/word-checker.js" type="text/javascript"></script>
+<script src="./js/scripts/rest.js" type="text/javascript"></script>
+
+<script src="./js/scripts/controllers/main-panel-controller.js" type="text/javascript"></script>
+
 </body>
 </html>

@@ -13,23 +13,6 @@ function wordsChecking(text) {
 		if (response != null) {
 			var responseJSON = JSON.parse(response);
 			return responseJSON;
-			// var output = null;
-			// var content = null;
-			// var similarWords = null;
-			// console.log(responseJSON);
-			// for (var i = 0; i < responseJSON.length; i++) {
-			// 	if (output == null) {
-			// 		output = responseJSON[0].input + '\n';
-			// 		content = responseJSON[0].notFound + '\n';
-			// 		similarWords = responseJSON[0].similarWords + '\n';
-			// 	} else {
-			// 		output += responseJSON[i].input + '\n';
-			// 		content += responseJSON[i].notFound + '\n';
-			// 		similarWords += responseJSON[i].similarWords + '\n';
-			// 	}
-			// }
-			// document.getElementById("output").innerHTML = 'Input:\n' + output + '\nNot found:\n' + content +
-			// 	'\nSimilar words:\n' + similarWords;
 		}
 	}
 }
