@@ -147,6 +147,7 @@ public class AasGraph {
 
 	public void readGraph(String graphName) {
 		if (nodeSet.isEmpty()) {
+			System.out.println("Reading data...");
 			timer.startCount();
 			nodeSet = nodeService.deserializeSetOfNodes(graphName);
 			timer.endCount();

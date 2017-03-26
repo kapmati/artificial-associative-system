@@ -1,35 +1,31 @@
 <div ng-controller="mainPanelController">
+	<br>
 	<form action="http://localhost:8080/run" method="get">
 		Book: <input type="text" name="book"><br>
 		<input type="submit" value="Run"/>
 	</form>
 	<br>
-	<br>
 	<form action="http://localhost:8080/extend" method="get">
 		Book: <input type="text" name="extendBook"><br>
 		<input type="submit" value="Extend"/>
 	</form>
+	<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+		<md-button class="md-raised md-warn" ng-click="breakExtending()">Przerwij budowe grafu</md-button>
+		<md-button class="md-accent md-raised md-hue-1" ng-click="outputText = ''">Usuń odpowiedź</md-button>
+	</section>
 	<br>
+	<!--<form action="http://localhost:8080/context">-->
+		<!--<input type="submit" value="Context"/>-->
+	<!--</form>-->
+	<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+		<md-button class="md-raised md-primary" ng-click="textAnalysis()">Analiza tekstu</md-button>
+		<md-button class="md-raised md-primary" ng-click="nextWord()">Kolejny wyraz</md-button>
+		<md-button class="md-raised md-primary" ng-click="checkInputWords()">Sprawdź słowa</md-button>
+	</section>
 	<br>
-	<input name="extend" onclick="breakExtending()" type="button" value="Break extending"/>
+	<div id="inputText" contenteditable=true spellcheck=false></div>
 	<br>
-	<br>
-	<form action="http://localhost:8080/context">
-		<input type="submit" value="Context"/>
-	</form>
-
-	<br>
-	<br>
-	<div id="input" contenteditable=true spellcheck=false></div>
-	<br>
-	<div id="output"></div>
-	<br>
-	<input name="buttonExecute" onclick="execute(document.getElementById('input').value)" type="button"
-		   value="Analiza tekstu"/>
-	<br>
-	<br>
-	<input name="buttonExecute" onclick="nextWord(document.getElementById('input').value)" type="button"
-		   value="Kolejny wyraz"/>
-	<br>
-	<br>
+	<div id="outputText" contenteditable=true spellcheck=false ng-model="outputText">
+		<pre>{{outputText}}</pre>
+	</div>
 </div>

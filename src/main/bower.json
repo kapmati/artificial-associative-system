@@ -1,11 +1,12 @@
 {
-	"name": "artificial-associative-system",
-	"autor": "Mateusz Kaproń",
-	"version": "1.0.0",
-	"dependencies": {
-		"angular": "~1.4.9",
-		"angular-resource": "~1.4.9",
-		"angular-route": "~1.4.9",
-		"jquery": "~2.2.0"
-	}
+  "name": "artificial-associative-system",
+  "autor": "Mateusz Kaproń",
+  "version": "1.0.0",
+  "dependencies": {
+    "angular": "~1.4.9",
+    "angular-resource": "~1.4.9",
+    "angular-route": "~1.4.9",
+    "jquery": "~2.2.0",
+    "angular-material": "^1.1.3"
+  }
 }
