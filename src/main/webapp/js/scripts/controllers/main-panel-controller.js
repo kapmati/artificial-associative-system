@@ -19,6 +19,26 @@ angular.module('aas').controller('mainPanelController', [
 
 		$scope.checkInputWordsSuccess = function (data) {
 			$scope.wordsAfterChecking = data;
+			var text = document.getElementById('inputText').innerHTML;
+			var tooltipWords = '';
+			for (var key in data) {
+				if (data.hasOwnProperty(key)) {
+					tooltipWords = '';
+					data[key].forEach(function (singleValue) {
+						tooltipWords = tooltipWords + '<input type="radio" value="test1">' + singleValue + '<br><br>';
+					});
+					var reg = new RegExp(' ' + key + ' ', "ig");
+					text = text.replace(reg, ' ' +
+						'<span class="hover" style="color:#ff6b00;">' + key +
+						'<span class="tooltip">' +
+						'<form action="">' +
+						tooltipWords +
+						'</form>' +
+						'</span>' +
+						'</span> ');
+				}
+			}
+			document.getElementById("inputText").innerHTML = text;
 		};
 
 		$scope.nextWord = function () {
@@ -36,11 +56,11 @@ angular.module('aas').controller('mainPanelController', [
 			$scope.outputText = words;
 		};
 
-		$scope.breakExtending = function() {
+		$scope.breakExtending = function () {
 			rest.breakExtending($scope.breakExtendingSuccess);
 		};
 
-		$scope.breakExtendingSuccess = function() {
+		$scope.breakExtendingSuccess = function () {
 			$scope.wordsAfterChecking = null;
 			//TODO
 		};
@@ -69,6 +89,30 @@ angular.module('aas').controller('mainPanelController', [
 			}
 			$scope.outputText = 'Input:\n' + output + '\nNot found:\n' + content +
 				'\nSimilar words:\n' + similarWords;
+		};
+
+		//Checking words
+		var waitingTime = 2500;
+		var activityTimeout = setTimeout(inActive, waitingTime);
+		var checkingNeeded = false;
+
+		function inActive() {
+			checkingNeeded = false;
+			console.log('Send request!');
+
+			//Send request and color wrong words
+			$scope.checkInputWords();
 		}
+
+		function resetActive() {
+			console.log('Reset');
+			checkingNeeded = true;
+			clearTimeout(activityTimeout);
+			activityTimeout = setTimeout(inActive, waitingTime);
+		}
+
+		$(document).bind('keypress', function () {
+			resetActive();
+		});
 	}
 ]);

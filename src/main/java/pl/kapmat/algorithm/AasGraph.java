@@ -31,7 +31,7 @@ public class AasGraph {
 
 	private Set<Node> nodeSet = new HashSet<>();
 	private TimeCounter timer = new TimeCounter();
-	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!','«','↑','*','.'};
+	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!', '«', '↑', '*', '.'};
 	private static final int THRESHOLD = 10;
 
 	public void run(String path, Language lang) {
@@ -126,9 +126,9 @@ public class AasGraph {
 
 	private void connectNeighbours(LinkedHashSet<Node> neighbourNodes) {
 		int firstIndex = 0, secondIndex = 0;
-		for (Node mainNode: neighbourNodes) {
+		for (Node mainNode : neighbourNodes) {
 			firstIndex++;
-			for (Node otherNode: neighbourNodes) {
+			for (Node otherNode : neighbourNodes) {
 				secondIndex++;
 				if (!mainNode.equals(otherNode) && firstIndex - secondIndex > 0) {
 					//Neighbours are added only with one direction
@@ -193,10 +193,10 @@ public class AasGraph {
 					}
 					similarWordList.add(similar + "|\n\n");
 					if (i > 0) {
-						Node oldNode = new Node(words[i-1].toUpperCase());
+						Node oldNode = new Node(words[i - 1].toUpperCase());
 						Map<Node, Coefficient> bestNextNodes = nodeService.getBestNeighbours(nodeSet.stream().filter(n -> n.getWord().equals(oldNode.getWord())).findFirst().orElse(new Node("!!!")));
 						for (Map.Entry next : bestNextNodes.entrySet()) {
-							bestNextList.add(((Node)next.getKey()).getWord());
+							bestNextList.add(((Node) next.getKey()).getWord());
 						}
 						notFoundList.add(words[i]);
 					}
@@ -207,12 +207,47 @@ public class AasGraph {
 
 			responseList.add(responseMap);
 		}
-		if (inputNodes.size() > 0) {
-			//TODO Tylko testowanie metod
-			Map<Node, Coefficient> bestNextNodes = nodeService.getBestNeighbours(inputNodes.get(0));
-		}
+//		if (inputNodes.size() > 0) {
+//			//TODO Tylko testowanie metod
+//			Map<Node, Coefficient> bestNextNodes = nodeService.getBestNeighbours(inputNodes.get(0));
+//		}
 
 		return responseList;
+	}
+
+	public Map<String, List<String>> findBetterWords(String inputSentence) {
+		Map<String, List<String>> responseMap = new HashMap<>();
+
+		List<Node> inputNodes = new ArrayList<>();
+		String[] sentences = inputSentence.split("\\n");
+		for (String strSentence : sentences) {
+			Sentence sentence = new Sentence(strSentence, Language.PL);
+			sentence = sentenceService.deleteChars(sentence, charsToDelete);
+			String[] words = sentence.getText().split(" ");
+			List<String> similarWordList = new ArrayList<>();
+			for (int i = 0; i < words.length; i++) {
+				Node node = new Node(words[i].toUpperCase());
+				String similar;
+				boolean invalidWord = true;
+				if (nodeSet.contains(node)) {
+					Node oldNode = nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get();
+					if (oldNode.getLevel() > THRESHOLD) {
+						inputNodes.add(nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get());
+						invalidWord = false;
+					}
+				}
+				if (invalidWord) {
+					List<Node> similarNodes = nodeService.similarWord(node, nodeSet);
+					for (Node n : similarNodes) {
+						similar = n.getWord() + "(" + n.getLevel() + ")";
+						similarWordList.add(similar);
+					}
+					responseMap.put(words[i], similarWordList);
+				}
+			}
+
+		}
+		return responseMap;
 	}
 
 	public Map<String, Object> findNextWord(String inputSentence) {

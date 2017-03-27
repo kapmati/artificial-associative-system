@@ -39,7 +39,7 @@ public class MainController {
 	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/Books/W_pustyni_i_w_puszczy.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/Books/Opowieść_wigilijna_(1925)-całość.txt";
 
-//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
+	//	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences_SHORT.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_news_2007_10K-sentences.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences_SHORT.txt";
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_100K-sentences.txt";
@@ -84,12 +84,8 @@ public class MainController {
 
 	@RequestMapping(value = "/wordsChecking", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> wordsChecking(@RequestBody String inputText) throws InterruptedException {
-//		aasGraph.readGraph("60k.ser");
-		//TODO TEST
-		Map<String, String> testMap = new HashMap<>();
-		testMap.put("testKey", "testValue");
-		testMap.put("tK", "tV");
-		return new ResponseEntity<>(testMap, HttpStatus.OK);
+		aasGraph.readGraph("60k.ser");
+		return new ResponseEntity<>(aasGraph.findBetterWords(inputText), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/breakExtending", method = RequestMethod.GET, produces = "application/json")

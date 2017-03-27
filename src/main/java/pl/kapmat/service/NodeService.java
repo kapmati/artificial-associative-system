@@ -58,7 +58,7 @@ public class NodeService {
 	}
 
 	public Map<Node, Double> getBestNextWords(List<Node> nodeList, String partOfWord) {
-		Node lastNode = nodeList.get(nodeList.size()-1);
+		Node lastNode = nodeList.get(nodeList.size() - 1);
 		Map<Node, Coefficient> lastNodeNeighbours = lastNode.getNeighbourMap();
 		Map<Node, Double> bestNodesMap = new HashMap<>();
 		for (Map.Entry<Node, Coefficient> nodeEntry : lastNodeNeighbours.entrySet()) {
