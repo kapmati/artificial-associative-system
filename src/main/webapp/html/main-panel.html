@@ -10,17 +10,18 @@
 		<input type="submit" value="Extend"/>
 	</form>
 	<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-		<md-button class="md-raised md-warn" ng-click="breakExtending()">Przerwij budowe grafu</md-button>
-		<md-button class="md-accent md-raised md-hue-1" ng-click="outputText = ''">Usuń odpowiedź</md-button>
+		<md-button class="md-raised md-warn" ng-disabled="!isGraphLoadedSuccessfully" ng-click="breakExtending()">Przerwij budowe grafu</md-button>
+		<md-button class="md-accent md-raised md-hue-1" ng-disabled="!isGraphLoadedSuccessfully" ng-click="outputText = ''">Usuń odpowiedź</md-button>
+		<md-button class="md-accent md-raised md-hue-1" ng-disabled="!isGraphLoadedSuccessfully" ng-click="clearInput()">Wyczyść wejście</md-button>
 	</section>
 	<br>
 	<!--<form action="http://localhost:8080/context">-->
 		<!--<input type="submit" value="Context"/>-->
 	<!--</form>-->
 	<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-		<md-button class="md-raised md-primary" ng-click="textAnalysis()">Analiza tekstu</md-button>
-		<md-button class="md-raised md-primary" ng-click="nextWord()">Kolejny wyraz</md-button>
-		<md-button class="md-raised md-primary" ng-click="checkInputWords()">Sprawdź słowa</md-button>
+		<md-button class="md-raised md-primary" ng-disabled="!isGraphLoadedSuccessfully" ng-click="textAnalysis()">Analiza tekstu</md-button>
+		<md-button class="md-raised md-primary" ng-disabled="!isGraphLoadedSuccessfully" ng-click="nextWord()">Dokończ słowo</md-button>
+		<md-button class="md-raised md-primary" ng-disabled="!isGraphLoadedSuccessfully" ng-click="checkInputWords()">Sprawdź słowa</md-button>
 	</section>
 	<br>
 	<div id="inputText" contenteditable=true spellcheck=false></div>

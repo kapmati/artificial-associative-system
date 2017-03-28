@@ -6,9 +6,15 @@ angular.module('aas').controller('mainPanelController', [
 	'$scope', 'rest',
 	function ($scope, rest) {
 
+		var fileName = '61.ser';
 		var inputText = null;
+		$scope.isGraphLoadedSuccessfully = false;
 		$scope.wordsAfterChecking = null;
 		$scope.outputText = '';
+
+		$scope.clearInput = function () {
+			document.getElementById('inputText').innerHTML = '';
+		};
 
 		$scope.checkInputWords = function () {
 			inputText = document.getElementById('inputText').innerHTML;
@@ -20,6 +26,8 @@ angular.module('aas').controller('mainPanelController', [
 		$scope.checkInputWordsSuccess = function (data) {
 			$scope.wordsAfterChecking = data;
 			var text = document.getElementById('inputText').innerHTML;
+			//TODO tymczasowo string jest rozszerzany aby korektor uwzględniał wszystie słowa
+			text = "A " + text + " Z";
 			var tooltipWords = '';
 			for (var key in data) {
 				if (data.hasOwnProperty(key)) {
@@ -38,17 +46,18 @@ angular.module('aas').controller('mainPanelController', [
 						'</span> ');
 				}
 			}
+			text = text.substring(2, text.length - 2);
 			document.getElementById("inputText").innerHTML = text;
 		};
 
-		$scope.nextWord = function () {
+		$scope.finishWord = function () {
 			inputText = document.getElementById('inputText').innerHTML;
 			if (inputText !== null && inputText !== "") {
-				rest.nextWord(inputText, $scope.nextWordSuccess);
+				rest.finishWord(inputText, $scope.finishWordSuccess);
 			}
 		};
 
-		$scope.nextWordSuccess = function (data) {
+		$scope.finishWordSuccess = function (data) {
 			var words = '';
 			for (var word in data.words) {
 				words += word + '(' + data.words[word] + ')\n';
@@ -91,28 +100,43 @@ angular.module('aas').controller('mainPanelController', [
 				'\nSimilar words:\n' + similarWords;
 		};
 
+		// $scope.isGraphLoaded = function () {
+		// 	if (isGraphLoadedSuccessfully) {
+		//
+		// 	}
+		// 	return false;
+		// };
+
 		//Checking words
 		var waitingTime = 2500;
 		var activityTimeout = setTimeout(inActive, waitingTime);
-		var checkingNeeded = false;
 
 		function inActive() {
-			checkingNeeded = false;
 			console.log('Send request!');
 
 			//Send request and color wrong words
-			$scope.checkInputWords();
+			// $scope.checkInputWords();
 		}
 
 		function resetActive() {
 			console.log('Reset');
-			checkingNeeded = true;
 			clearTimeout(activityTimeout);
 			activityTimeout = setTimeout(inActive, waitingTime);
 		}
 
-		$(document).bind('keypress', function () {
-			resetActive();
-		});
+		$scope.init = function (fileName) {
+			rest.loadGraph(fileName, $scope.initSuccess);
+		};
+
+		$scope.initSuccess = function () {
+			//TODO -> wyświetlić info o poprawnym wczytaniu grafu
+			$scope.isGraphLoadedSuccessfully = true;
+		};
+
+		$scope.init(fileName);
+
+		// $(document).bind('keypress', function () {
+		// 	resetActive();
+		// });
 	}
 ]);

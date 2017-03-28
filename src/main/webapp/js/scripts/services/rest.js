@@ -26,12 +26,16 @@ angular.module('aas').service('rest', [
 			jsonGet('/breakExtending', onSuccess);
 		};
 
-		this.nextWord = function (text, onSuccess) {
-			jsonPost('/nextWord', text, onSuccess);
+		this.finishWord = function (text, onSuccess) {
+			jsonPost('/finishWord', text, onSuccess);
 		};
 
 		this.checkWords = function (text, onSuccess) {
 			jsonPost('/wordsChecking', text, onSuccess);
+		};
+
+		this.loadGraph = function (fileName, onSuccess) {
+			jsonPost('/loadGraph', fileName, onSuccess);
 		};
 
 		var successHandler = function (onSuccess) {

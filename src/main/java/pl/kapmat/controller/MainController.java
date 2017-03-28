@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.kapmat.algorithm.AasGraph;
 import pl.kapmat.model.Language;
 import pl.kapmat.service.SentenceService;
@@ -72,19 +69,19 @@ public class MainController {
 
 	@RequestMapping(value = "/textAnalysis", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> textAnalysis(@RequestBody String inputText) throws InterruptedException {
-		aasGraph.readGraph("60k.ser");
+//		aasGraph.readGraph("60k.ser");
 		return new ResponseEntity<>(aasGraph.textAnalysis(inputText), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/nextWord", method = RequestMethod.POST, produces = "application/json")
-	public ResponseEntity<?> nextWord(@RequestBody String inputText) throws InterruptedException {
-		aasGraph.readGraph("60k.ser");
-		return new ResponseEntity<>(aasGraph.findNextWord(inputText), HttpStatus.OK);
+	@RequestMapping(value = "/finishWord", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<?> finishWord(@RequestBody String inputText) throws InterruptedException {
+//		aasGraph.readGraph("60k.ser");
+		return new ResponseEntity<>(aasGraph.finishWord(inputText), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/wordsChecking", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> wordsChecking(@RequestBody String inputText) throws InterruptedException {
-		aasGraph.readGraph("60k.ser");
+//		aasGraph.readGraph("60k.ser");
 		return new ResponseEntity<>(aasGraph.findBetterWords(inputText), HttpStatus.OK);
 	}
 
@@ -94,5 +91,12 @@ public class MainController {
 		Map<String, String> response = new HashMap<>();
 		response.put("message", "Extending interrupted successfully");
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+//	@CrossOrigin(origins = "http://localhost:63342")
+	@RequestMapping(value = "/loadGraph", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<?> loadGraph(@RequestBody String fileName) throws InterruptedException {
+		aasGraph.readGraph("60k.ser");
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

@@ -57,12 +57,21 @@ public class NodeService {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
-	public Map<Node, Double> getBestNextWords(List<Node> nodeList, String partOfWord) {
+	public Map<Node, Double> getBestNextWordsUsingPart(List<Node> nodeList, String partOfWord) {
+		return getBestNextWords(nodeList).entrySet().stream()
+				.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
+
+	public Map<Node, Double> getBestNextWords(List<Node> nodeList) {
 		Node lastNode = nodeList.get(nodeList.size() - 1);
 		Map<Node, Coefficient> lastNodeNeighbours = lastNode.getNeighbourMap();
 		Map<Node, Double> bestNodesMap = new HashMap<>();
 		for (Map.Entry<Node, Coefficient> nodeEntry : lastNodeNeighbours.entrySet()) {
 			bestNodesMap.put(nodeEntry.getKey(), nodeEntry.getValue().getSynapticWeight());
+			if (nodeEntry.getKey().getWord().equals("FAJNY")) {
+				System.out.println('1');
+			}
 		}
 		for (Node node : nodeList) {
 			if (!node.equals(lastNode)) {
@@ -79,11 +88,7 @@ public class NodeService {
 				}
 			}
 		}
-
-		//Filter all neighbour which starts with @partOfWord
-		return bestNodesMap.entrySet().stream()
-				.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		return bestNodesMap;
 	}
 
 	public List<Node> similarWord(Node node, Set<Node> candidates) {
@@ -116,7 +121,7 @@ public class NodeService {
 		int maxValue = similarityMap.entrySet().stream().max((e1, e2) -> e1.getValue() > e2.getValue() ? 1 : -1).get().getValue();
 
 		List<Node> similarityList = similarityMap.entrySet().stream()
-				.filter(e -> e.getValue().equals(maxValue) && e.getKey().getWord().length() <= word.length() + 1)
+				.filter(e -> e.getValue().equals(maxValue - 1) && e.getKey().getWord().length() <= word.length() + 1)
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
 

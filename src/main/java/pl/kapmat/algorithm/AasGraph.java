@@ -32,7 +32,7 @@ public class AasGraph {
 	private Set<Node> nodeSet = new HashSet<>();
 	private TimeCounter timer = new TimeCounter();
 	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!', '«', '↑', '*', '.'};
-	private static final int THRESHOLD = 10;
+	private static final int THRESHOLD = 2;
 
 	public void run(String path, Language lang) {
 		//Load sentences from file
@@ -224,23 +224,26 @@ public class AasGraph {
 			Sentence sentence = new Sentence(strSentence, Language.PL);
 			sentence = sentenceService.deleteChars(sentence, charsToDelete);
 			String[] words = sentence.getText().split(" ");
-			List<String> similarWordList = new ArrayList<>();
 			for (int i = 0; i < words.length; i++) {
+				List<String> similarWordList = new ArrayList<>();
 				Node node = new Node(words[i].toUpperCase());
 				String similar;
 				boolean invalidWord = true;
 				if (nodeSet.contains(node)) {
 					Node oldNode = nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get();
 					if (oldNode.getLevel() > THRESHOLD) {
-						inputNodes.add(nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get());
+						inputNodes.add(oldNode);
 						invalidWord = false;
 					}
 				}
 				if (invalidWord) {
 					List<Node> similarNodes = nodeService.similarWord(node, nodeSet);
-					for (Node n : similarNodes) {
-						similar = n.getWord() + "(" + n.getLevel() + ")";
-						similarWordList.add(similar);
+					Map<Node, Double> nextWords = nodeService.getBestNextWords(inputNodes);
+					for (Node singleNode : similarNodes) {
+						if (nextWords.containsKey(singleNode)) {
+							similar = singleNode.getWord() + "(" + singleNode.getLevel() + ")[" + nextWords.get(singleNode) + "]";
+							similarWordList.add(similar);
+						}
 					}
 					responseMap.put(words[i], similarWordList);
 				}
@@ -250,7 +253,30 @@ public class AasGraph {
 		return responseMap;
 	}
 
-	public Map<String, Object> findNextWord(String inputSentence) {
+//	public Map<Node, Double> findNextWords(List<Node> inputNodesPart) {
+//		Map<Node, Double> responseMap = new HashMap<>();
+//
+////		String[] sentences = inputSentence.split("\\n");
+////		String lastSentence = sentences[sentences.length - 1];
+////		Sentence sentence = new Sentence(lastSentence, Language.PL);
+////		sentence = sentenceService.deleteChars(sentence, charsToDelete);
+////		String[] words = sentence.getText().split(" ");
+////		List<Node> nodeList = new ArrayList<>();
+////		for (int i = 0; i < words.length - 1; i++) {
+////			Node newNode = new Node(words[i]);
+////			//TODO Zakładam tymczasowo że wszystkie słowa są poprawne!!
+////			//W przypadku wykrycia niepoprawnego słowa trzeba najpierw znaleźć poprawne słowa!!
+////			Node node = nodeSet.stream().filter(n -> n.getWord().equals(newNode.getWord().toUpperCase())).findFirst().get();
+////			nodeList.add(node);
+////		}
+//		Map<Node, Double> nextWords = nodeService.getBestNextWords(inputNodesPart);
+//		for (Map.Entry<Node, Double> entry : nextWords.entrySet()) {
+//			responseList.add(entry.getKey().getWord() + " <" + entry.getValue() + ">");
+//		}
+//		return responseMap;
+//	}
+
+	public Map<String, Object> finishWord(String inputSentence) {
 		Map<String, Object> responseMap = new HashMap<>();
 
 		String[] sentences = inputSentence.split("\\n");
@@ -266,7 +292,7 @@ public class AasGraph {
 			Node node = nodeSet.stream().filter(n -> n.getWord().equals(newNode.getWord().toUpperCase())).findFirst().get();
 			nodeList.add(node);
 		}
-		Map<Node, Double> bestWords = nodeService.getBestNextWords(nodeList, words[words.length - 1]);
+		Map<Node, Double> bestWords = nodeService.getBestNextWordsUsingPart(nodeList, words[words.length - 1]);
 		Map<String, Double> resultMap = new LinkedHashMap<>();
 		for (Map.Entry<Node, Double> entry : bestWords.entrySet()) {
 			resultMap.put(entry.getKey().getWord(), entry.getValue());
