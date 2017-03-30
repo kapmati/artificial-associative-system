@@ -1,9 +1,19 @@
 <div ng-controller="mainPanelController">
 	<br>
+	<div>
 	<form action="http://localhost:8080/run" method="get">
-		Book: <input type="text" name="book"><br>
+		Book: <input type="text" name="text">
 		<input type="submit" value="Run"/>
+		<!--<input type="text"  name="textType" value="book" disabled="true">-->
 	</form>
+	<br>
+	<form action="http://localhost:8080/run" method="get">
+		Text: <input type="text" name="text">
+		<input type="submit" value="Run"/>
+		<!--<input type="text" value="text" disabled="true">-->
+	</form>
+	<br>
+	</div>
 	<br>
 	<form action="http://localhost:8080/extend" method="get">
 		Book: <input type="text" name="extendBook"><br>

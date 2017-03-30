@@ -41,13 +41,18 @@ public class SentenceService {
 		sentenceDAO.deleteAll();
 	}
 
-	public void insertSentences(String path, Language lang) {
-		insertSentencesIntoDatabase(getSentencesAfterCorrection(path, lang));
+	public void insertSentences(String path, Language lang, String type) {
+		insertSentencesIntoDatabase(getSentencesAfterCorrection(path, lang, type));
 	}
 
-	public List<Sentence> getSentencesAfterCorrection(String path, Language lang) {
+	public List<Sentence> getSentencesAfterCorrection(String path, Language lang, String type) {
 		FileOperator fileOperator = new FileOperator();
-		List<Sentence> sentenceList = fileOperator.getSentencesFromTxtBook(path, lang);
+		List<Sentence> sentenceList;
+		if (type.equalsIgnoreCase("book")) {
+			sentenceList = fileOperator.getSentencesFromTxtBook(path, lang);
+		} else {
+			sentenceList = fileOperator.getSentencesFromTxt(path, lang);
+		}
 
 		sentenceList = deleteSentencePartBeforeChar(sentenceList, '\t');
 		return sentenceList;

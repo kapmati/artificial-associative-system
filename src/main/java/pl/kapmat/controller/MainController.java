@@ -45,19 +45,25 @@ public class MainController {
 
 	@RequestMapping(value = "/extend", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> extend(@RequestParam("extendBook") String extendBook) {
-		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + extendBook, LANGUAGE));
+		String type = "book";
+		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + extendBook, LANGUAGE, type));
 		return new ResponseEntity<>("Main page - Artificial associative system", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/run", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> run(@RequestParam("book") String book) {
-		aasGraph.run(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + book, LANGUAGE);
+	public ResponseEntity<?> run(@RequestParam("text") String text) {
+		String textType = "s";
+		if (textType.equalsIgnoreCase("book")) {
+			aasGraph.run(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + text, LANGUAGE, textType);
+		} else {
+			aasGraph.run(System.getProperty("user.dir") + "/src/main/resources/text/" + text, LANGUAGE, textType);
+		}
 		return new ResponseEntity<>("Main page - Artificial associative system", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/insertData", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<?> insertData() {
-		sentenceService.insertSentences(PATH, Language.PL);
+		sentenceService.insertSentences(PATH, Language.PL, "book");
 		return new ResponseEntity<>("File: " + PATH + "<br>Language: " + Language.PL, HttpStatus.OK);
 	}
 
@@ -96,7 +102,7 @@ public class MainController {
 //	@CrossOrigin(origins = "http://localhost:63342")
 	@RequestMapping(value = "/loadGraph", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> loadGraph(@RequestBody String fileName) throws InterruptedException {
-		aasGraph.readGraph("60k.ser");
+		aasGraph.readGraph(fileName);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

@@ -21,9 +21,8 @@ public class NodeService {
 	}
 
 	public void serializeSetOfNodes(Set<Node> nodeSet, String graphFileName) {
-		try (OutputStream file = new FileOutputStream("src/main/resources/" + graphFileName);
-			 OutputStream buffer = new BufferedOutputStream(file);
-			 ObjectOutput output = new ObjectOutputStream(buffer);
+		try (FileOutputStream file = new FileOutputStream("src/main/resources/" + graphFileName);
+			 ObjectOutputStream output = new ObjectOutputStream(file)
 		) {
 			output.writeObject(nodeSet);
 		} catch (IOException e) {
@@ -33,9 +32,8 @@ public class NodeService {
 
 	public Set<Node> deserializeSetOfNodes(String graphFileName) {
 		Set<Node> setOfNodes = null;
-		try (InputStream file = new FileInputStream("src/main/resources/" + graphFileName);
-			 InputStream buffer = new BufferedInputStream(file);
-			 ObjectInput input = new ObjectInputStream(buffer);
+		try (FileInputStream file = new FileInputStream("src/main/resources/" + graphFileName);
+			 ObjectInputStream input = new ObjectInputStream(file)
 		) {
 			setOfNodes = (Set<Node>) input.readObject();
 		} catch (IOException | ClassNotFoundException e) {
@@ -69,9 +67,6 @@ public class NodeService {
 		Map<Node, Double> bestNodesMap = new HashMap<>();
 		for (Map.Entry<Node, Coefficient> nodeEntry : lastNodeNeighbours.entrySet()) {
 			bestNodesMap.put(nodeEntry.getKey(), nodeEntry.getValue().getSynapticWeight());
-			if (nodeEntry.getKey().getWord().equals("FAJNY")) {
-				System.out.println('1');
-			}
 		}
 		for (Node node : nodeList) {
 			if (!node.equals(lastNode)) {

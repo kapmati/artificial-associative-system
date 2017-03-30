@@ -31,12 +31,14 @@ public class AasGraph {
 
 	private Set<Node> nodeSet = new HashSet<>();
 	private TimeCounter timer = new TimeCounter();
-	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|', '/', '\\', '*', '\'', '?', '"', '!', '«', '↑', '*', '.'};
-	private static final int THRESHOLD = 2;
+	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|',
+			'/', '\\', '*', '\'', '?', '"', '!', '«', '↑', '*', '.', '$', '@', '%', '&', '–', '§', '»', '„', '“', '¿',
+			'–', '—', '†', '•', '…', '\u2028', '▪', '♦'};
+	private static final int THRESHOLD = 5;
 
-	public void run(String path, Language lang) {
+	public void run(String path, Language lang, String type) {
 		//Load sentences from file
-		List<Sentence> sentences = sentenceService.getSentencesAfterCorrection(path, lang);
+		List<Sentence> sentences = sentenceService.getSentencesAfterCorrection(path, lang, type);
 
 		//Delete unnecessary characters
 		sentences = sentenceService.deleteChars(sentences, charsToDelete);
@@ -51,12 +53,12 @@ public class AasGraph {
 		timer.showTime("Build graph");
 
 		timer.startCount();
-		nodeService.serializeSetOfNodes(nodeSet, "books.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "booksNew.ser");
 		timer.endCount();
 		timer.showTime("Serialize graph");
 
 		timer.startCount();
-		Set<Node> newSet = nodeService.deserializeSetOfNodes("books.ser");
+		Set<Node> newSet = nodeService.deserializeSetOfNodes("booksNew.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 		System.out.println("NodeSet size:" + nodeSet.size());
@@ -64,7 +66,7 @@ public class AasGraph {
 
 	public void extendGraph(List<Sentence> sentences) {
 		timer.startCount();
-		nodeSet = nodeService.deserializeSetOfNodes("books.ser");
+		nodeSet = nodeService.deserializeSetOfNodes("booksNew.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
@@ -79,7 +81,7 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Extend graph [+" + sentences.size() + " sentences]");
 
-		nodeService.serializeSetOfNodes(nodeSet, "books.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "booksNew.ser");
 		System.out.println("NodeSet size:" + nodeSet.size());
 	}
 
@@ -239,11 +241,20 @@ public class AasGraph {
 				if (invalidWord) {
 					List<Node> similarNodes = nodeService.similarWord(node, nodeSet);
 					Map<Node, Double> nextWords = nodeService.getBestNextWords(inputNodes);
-					for (Node singleNode : similarNodes) {
-						if (nextWords.containsKey(singleNode)) {
-							similar = singleNode.getWord() + "(" + singleNode.getLevel() + ")[" + nextWords.get(singleNode) + "]";
-							similarWordList.add(similar);
+					if (nextWords.size() > 0) {
+						for (Node singleNode : similarNodes) {
+							if (nextWords.containsKey(singleNode)) {
+								similar = singleNode.getWord() + "(" + singleNode.getLevel() + ")[" + nextWords.get(singleNode) + "]";
+								similarWordList.add(similar);
+							}
 						}
+					} else {
+						similar = similarNodes.get(0).getWord() + "(" + similarNodes.get(0).getLevel() + ")[" + nextWords.get(similarNodes.get(0)) + "]*";
+						similarWordList.add(similar);
+						similar = similarNodes.get(1).getWord() + "(" + similarNodes.get(1).getLevel() + ")[" + nextWords.get(similarNodes.get(1)) + "]*";
+						similarWordList.add(similar);
+						similar = similarNodes.get(2).getWord() + "(" + similarNodes.get(2).getLevel() + ")[" + nextWords.get(similarNodes.get(2)) + "]*";
+						similarWordList.add(similar);
 					}
 					responseMap.put(words[i], similarWordList);
 				}

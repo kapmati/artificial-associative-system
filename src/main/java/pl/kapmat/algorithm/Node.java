@@ -1,6 +1,6 @@
 package pl.kapmat.algorithm;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author Mateusz Kaproń
  */
-public class Node implements Serializable {
+public class Node implements Externalizable {
 
 	private String word;
 	private int level = 0;
@@ -89,5 +89,19 @@ public class Node implements Serializable {
 		} else {
 			return word.hashCode();
 		}
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput objectOutput) throws IOException {
+		objectOutput.writeUTF(word);
+		objectOutput.writeInt(level);
+		objectOutput.writeObject(neighbourMap);
+	}
+
+	@Override
+	public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+		this.word = objectInput.readUTF();
+		this.level = objectInput.readInt();
+		this.neighbourMap = (HashMap) objectInput.readObject();
 	}
 }
