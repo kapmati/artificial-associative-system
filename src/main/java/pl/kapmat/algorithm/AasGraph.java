@@ -11,6 +11,7 @@ import pl.kapmat.util.GraphProgressChecker;
 import pl.kapmat.util.TimeCounter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Artificial associative system main class
@@ -34,7 +35,7 @@ public class AasGraph {
 	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|',
 			'/', '\\', '*', '\'', '?', '"', '!', '«', '↑', '*', '.', '$', '@', '%', '&', '–', '§', '»', '„', '“', '¿',
 			'–', '—', '†', '•', '…', '\u2028', '▪', '♦'};
-	private static final int THRESHOLD = 5;
+	private static final int THRESHOLD = 1;
 
 	public void run(String path, Language lang, String type) {
 		//Load sentences from file
@@ -53,12 +54,12 @@ public class AasGraph {
 		timer.showTime("Build graph");
 
 		timer.startCount();
-		nodeService.serializeSetOfNodes(nodeSet, "booksNew.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "knowledgeSource.ser");
 		timer.endCount();
 		timer.showTime("Serialize graph");
 
 		timer.startCount();
-		Set<Node> newSet = nodeService.deserializeSetOfNodes("booksNew.ser");
+		Set<Node> newSet = nodeService.deserializeSetOfNodes("knowledgeSource.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 		System.out.println("NodeSet size:" + nodeSet.size());
@@ -209,11 +210,6 @@ public class AasGraph {
 
 			responseList.add(responseMap);
 		}
-//		if (inputNodes.size() > 0) {
-//			//TODO Tylko testowanie metod
-//			Map<Node, Coefficient> bestNextNodes = nodeService.getBestNeighbours(inputNodes.get(0));
-//		}
-
 		return responseList;
 	}
 
@@ -288,7 +284,7 @@ public class AasGraph {
 //	}
 
 	public Map<String, Object> finishWord(String inputSentence) {
-		Map<String, Object> responseMap = new HashMap<>();
+		Map<String, Object> responseMap = new TreeMap<>();
 
 		String[] sentences = inputSentence.split("\\n");
 		String lastSentence = sentences[sentences.length - 1];
@@ -297,18 +293,23 @@ public class AasGraph {
 		String[] words = sentence.getText().split(" ");
 		List<Node> nodeList = new ArrayList<>();
 		for (int i = 0; i < words.length - 1; i++) {
-			Node newNode = new Node(words[i]);
-			//TODO Zakładam tymczasowo że wszystkie słowa są poprawne!!
-			//W przypadku wykrycia niepoprawnego słowa trzeba najpierw znaleźć poprawne słowa!!
-			Node node = nodeSet.stream().filter(n -> n.getWord().equals(newNode.getWord().toUpperCase())).findFirst().get();
-			nodeList.add(node);
+			Node newNode = new Node(words[i].toUpperCase());
+			if (nodeSet.contains(newNode)) {
+				Node node = nodeSet.stream().filter(n -> n.getWord().equals(newNode.getWord().toUpperCase())).findFirst().get();
+				nodeList.add(node);
+			}
 		}
-		Map<Node, Double> bestWords = nodeService.getBestNextWordsUsingPart(nodeList, words[words.length - 1]);
-		Map<String, Double> resultMap = new LinkedHashMap<>();
-		for (Map.Entry<Node, Double> entry : bestWords.entrySet()) {
-			resultMap.put(entry.getKey().getWord(), entry.getValue());
+		if (nodeList.size() > 0) {
+			Map<Node, Double> bestWords = new LinkedHashMap<>(nodeService.getBestNextWordsUsingPart(nodeList, words[words.length - 1]));
+			bestWords = bestWords.entrySet().stream()
+					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x,y)-> {throw new AssertionError();}, LinkedHashMap::new));
+			Map<String, Double> resultMap = new LinkedHashMap<>();
+			for (Map.Entry<Node, Double> entry : bestWords.entrySet()) {
+				resultMap.put(entry.getKey().getWord(), entry.getValue());
+			}
+			responseMap.put("words", resultMap);
 		}
-		responseMap.put("words", resultMap);
 		return responseMap;
 	}
 }

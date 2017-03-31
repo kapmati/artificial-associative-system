@@ -56,9 +56,18 @@ public class NodeService {
 	}
 
 	public Map<Node, Double> getBestNextWordsUsingPart(List<Node> nodeList, String partOfWord) {
-		return getBestNextWords(nodeList).entrySet().stream()
-				.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		if (partOfWord.equalsIgnoreCase("nbsp")) {
+			return getBestNextWords(nodeList).entrySet().stream()
+					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+					.limit(20)
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		} else {
+			return getBestNextWords(nodeList).entrySet().stream()
+					.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
+					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+					.limit(20)
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		}
 	}
 
 	public Map<Node, Double> getBestNextWords(List<Node> nodeList) {
