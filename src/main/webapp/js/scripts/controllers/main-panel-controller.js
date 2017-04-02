@@ -11,6 +11,11 @@ angular.module('aas').controller('mainPanelController', [
 		$scope.isGraphLoadedSuccessfully = false;
 		$scope.wordsAfterChecking = null;
 		$scope.outputText = '';
+		$scope.inputFile = false;
+
+		$scope.addInputFile = function () {
+			$scope.inputFile = document.getElementById('inputText').innerHTML = '';
+		};
 
 		$scope.clearInput = function () {
 			document.getElementById('inputText').innerHTML = '';
@@ -138,5 +143,22 @@ angular.module('aas').controller('mainPanelController', [
 		// $(document).bind('keypress', function () {
 		// 	resetActive();
 		// });
+		$(function () {
+			$('.toggle-sidebar').click(function () {
+				toggleSideBar();
+			});
+		});
+
+		function toggleSideBar() {
+
+			if ($('#page-wrapper').hasClass('show-sidebar')) {
+				// Do things on Nav Close
+				$('#page-wrapper').removeClass('show-sidebar');
+			} else {
+				// Do things on Nav Open
+				$('#page-wrapper').addClass('show-sidebar');
+			}
+			//$('#site-wrapper').toggleClass('show-nav');
+		}
 	}
 ]);

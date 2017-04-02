@@ -1,47 +1,87 @@
-<div ng-controller="mainPanelController">
-	<br>
+<div ng-controller="mainPanelController" style="margin-left: 50px;">
+	<div id="page-wrapper">
+		<div id="page-viewport">
+			<div id="sidebar">
+				<div id="sidebar-header">
+					<a href="" class="toggle-sidebar icon-background"><h3>AAS</h3></a>
+					<span class="pull-right">
+							<a href="" class="toggle-sidebar btn btn-default">
+							<i class="fa fa-bars"></i>
+							</a>
+							</span>
+				</div>
+				<ul class="nav nav-pills nav-stacked">
+					<li><a href="javascript:document.getElementById('inputFile').click()"
+						   class="icon-background">Add file<span class="pull-right"><i
+							class="fa fa-list icon-background"></i></span></a>
+					</li>
+					<li><a href="" ng-click="textAnalysis()"
+						   class="icon-background">Create graph<span class="pull-right"><i
+							class="fa fa-list icon-background"></i></span></a>
+					</li>
+					<li><a href="" ng-click="textAnalysis()"
+						   class="icon-background">Extend graph<span class="pull-right"><i
+							class="fa fa-list icon-background"></i></span></a>
+					</li>
+					<li><a href="" ng-click="breakExtending()"
+						   class="icon-background">Break extending<span class="pull-right"><i
+							class="fa fa-code"></i></span></a>
+					</li>
+					<li><a href="" ng-click="textAnalysis()"
+						   class="icon-background">Text analysis<span class="pull-right"><i
+							class="fa fa-list icon-background"></i></span></a>
+					</li>
+					<li><a href="" ng-click="checkInputWords()"
+						   class="icon-background">Check words<span class="pull-right"><i
+							class="fa fa-code icon-background"></i></span></a>
+					</li>
+					<li><a href="" ng-click="finishWord()"
+						   class="icon-background">Next word<span class="pull-right"><i
+							class="fa fa-code"></i></span></a>
+					</li>
+					<li><a href="" ng-click="clearInput()"
+						   class="icon-background">Clean input<span class="pull-right"><i
+							class="fa fa-code"></i></span></a>
+					</li>
+					<li><a href="" ng-click="outputText = ''"
+						   class="icon-background">Clean output<span class="pull-right"><i
+							class="fa fa-code"></i></span></a>
+					</li>
+				</ul>
+			</div>
+			<div id="sidebar-page-content">
+				<input type="file" style="display:none;" id="inputFile"/>
+				<div>
+					<form action="http://localhost:8080/run" method="get">
+						Book: <input type="text" name="text">
+						<input type="submit" value="Run"/>
+						<!--<input type="text"  name="textType" value="book" disabled="true">-->
 
-	<div>
-	<form action="http://localhost:8080/run" method="get">
-		Book: <input type="text" name="text">
-		<input type="submit" value="Run"/>
-		<!--<input type="text"  name="textType" value="book" disabled="true">-->
-		<input type="file" style="display:none;" id="inputfile"/>
-		<!--<a href="javascript:document.getElementById('inputfile').click(); ">try this</a>-->
-	</form>
-	<br>
-	<form action="http://localhost:8080/run" method="get">
-		Text: <input type="text" name="text">
-		<input type="submit" value="Run"/>
-		<!--<input type="text" value="text" disabled="true">-->
-	</form>
-	<br>
+					</form>
+					<!--<a href="javascript:document.getElementById('inputfile').click(); ">try this</a>-->
+					<br>
+					<form action="http://localhost:8080/run" method="get">
+						Text: <input type="text" name="text">
+						<input type="submit" value="Run"/>
+						<!--<input type="text" value="text" disabled="true">-->
+					</form>
+					<br>
+				</div>
+				<br>
+				<form action="http://localhost:8080/extend" method="get">
+					Book: <input type="text" name="extendBook"><br>
+					<input type="submit" value="Extend"/>
+				</form>
+				<br>
+				<div id="inputText" contenteditable=true spellcheck=false></div>
+				<br>
+				<!--<div id="outputText" spellcheck=false ng-model="outputText">-->
+				<!--<pre>{{outputText}}</pre>-->
+				<!--</div>-->
+				<!--<script src="./js/scripts/graph/graph.js"></script>-->
+				<!--<ng-include src="'html/graph-view.html'"/>-->
+				<ng-include src="'html/graph-view.html'"/>
+			</div>
+		</div>
 	</div>
-	<br>
-	<form action="http://localhost:8080/extend" method="get">
-		Book: <input type="text" name="extendBook"><br>
-		<input type="submit" value="Extend"/>
-	</form>
-	<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-		<md-button class="md-raised md-warn" ng-disabled="!isGraphLoadedSuccessfully" ng-click="breakExtending()">Przerwij budowe grafu</md-button>
-		<md-button class="md-accent md-raised md-hue-1" ng-disabled="!isGraphLoadedSuccessfully" ng-click="outputText = ''">Usuń odpowiedź</md-button>
-		<md-button class="md-accent md-raised md-hue-1" ng-disabled="!isGraphLoadedSuccessfully" ng-click="clearInput()">Wyczyść wejście</md-button>
-	</section>
-	<br>
-	<!--<form action="http://localhost:8080/context">-->
-		<!--<input type="submit" value="Context"/>-->
-	<!--</form>-->
-	<section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-		<md-button class="md-raised md-primary" ng-disabled="!isGraphLoadedSuccessfully" ng-click="textAnalysis()">Analiza tekstu</md-button>
-		<md-button class="md-raised md-primary" ng-disabled="!isGraphLoadedSuccessfully" ng-click="finishWord()">Dokończ słowo/Kolejne słowo</md-button>
-		<md-button class="md-raised md-primary" ng-disabled="!isGraphLoadedSuccessfully" ng-click="checkInputWords()">Sprawdź słowa</md-button>
-	</section>
-	<br>
-	<div id="inputText" contenteditable=true spellcheck=false></div>
-	<br>
-	<!--<div id="outputText" spellcheck=false ng-model="outputText">-->
-		<!--<pre>{{outputText}}</pre>-->
-	<!--</div>-->
-	<!--<script src="./js/scripts/graph/graph.js"></script>-->
-	<ng-include src="'html/graph-view.html'"/>
 </div>
