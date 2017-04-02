@@ -12,7 +12,7 @@ angular.module('aas').controller('graphController', [
 		var newParent = null;
 		var rootObjects = null;
 
-		var margin = {top: 5, right: 50, bottom: 5, left: 50},
+		var margin = {top: 5, right: 50, bottom: 5, left: 100},
 			width = w - margin.right - margin.left,
 			height = h - margin.top - margin.bottom;
 
@@ -209,9 +209,6 @@ angular.module('aas').controller('graphController', [
 					update(d);
 				} else {
 					//Send request
-
-					//TODO sprawdzić czy name zawiera współczynnik!!! Jeśli tak to go usunąć
-
 					var currentObject = d;
 					var words = [];
 					while (currentObject.hasOwnProperty('parent')) {
@@ -240,12 +237,12 @@ angular.module('aas').controller('graphController', [
 		}
 
 		$scope.nextWord = function (words, node) {
-			console.log('newParent');
-			console.log(newParent);
+			$scope.startSpin();
 			rest.nextWord(words + ' ', $scope.nextWordSuccess);
 		};
 
 		$scope.nextWordSuccess = function (data) {
+			$scope.stopSpin();
 			console.log(5);
 			console.log('data');
 			console.log(data);

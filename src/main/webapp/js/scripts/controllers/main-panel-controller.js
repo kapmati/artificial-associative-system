@@ -3,8 +3,8 @@
  * 25.03.17
  */
 angular.module('aas').controller('mainPanelController', [
-	'$scope', 'rest',
-	function ($scope, rest) {
+	'$rootScope', '$scope', 'rest', 'usSpinnerService', '$timeout',
+	function ($rootScope, $scope, rest, usSpinnerService, $timeout) {
 
 		var fileName = 'knowledgeSource.ser';
 		var inputText = null;
@@ -16,32 +16,37 @@ angular.module('aas').controller('mainPanelController', [
 		$scope.createGraph = function () {
 			inputFileName = document.getElementById('inputFile').files[0].name;
 			if (inputFileName !== null && inputFileName !== "") {
+				$scope.startSpin();
 				rest.createGraph(inputFileName, $scope.createGraphSuccess);
 			}
 		};
 
 		$scope.createGraphSuccess = function () {
 			//TODO
+			$scope.stopSpin();
 		};
 
 		$scope.extendGraph = function () {
 			inputFileName = document.getElementById('inputFile').files[0].name;
 			if (inputFileName !== null && inputFileName !== "") {
+				$scope.startSpin();
 				rest.extendGraph(inputFileName, $scope.extendGraphSuccess);
 			}
 		};
 
 		$scope.extendGraphSuccess = function () {
 			//TODO
+			$scope.stopSpin();
 		};
 
-		$scope.clearInput = function () {
+		$scope.cleanInput = function () {
 			document.getElementById('inputText').innerHTML = '';
 		};
 
 		$scope.checkInputWords = function () {
 			inputText = document.getElementById('inputText').innerHTML;
 			if (inputText !== null && inputText !== "") {
+				$scope.startSpin();
 				rest.checkWords(inputText, $scope.checkInputWordsSuccess);
 			}
 		};
@@ -71,11 +76,13 @@ angular.module('aas').controller('mainPanelController', [
 			}
 			text = text.substring(2, text.length - 2);
 			document.getElementById("inputText").innerHTML = text;
+			$scope.stopSpin();
 		};
 
 		$scope.finishWord = function () {
 			inputText = document.getElementById('inputText').innerHTML;
 			if (inputText !== null && inputText !== "") {
+				$scope.startSpin();
 				rest.finishWord(inputText, $scope.finishWordSuccess);
 			}
 		};
@@ -86,20 +93,24 @@ angular.module('aas').controller('mainPanelController', [
 				words += word + '(' + data.words[word] + ')\n';
 			}
 			$scope.outputText = words;
+			$scope.stopSpin();
 		};
 
 		$scope.breakExtending = function () {
+			$scope.startSpin();
 			rest.breakExtending($scope.breakExtendingSuccess);
 		};
 
 		$scope.breakExtendingSuccess = function () {
 			$scope.wordsAfterChecking = null;
+			$scope.stopSpin();
 			//TODO
 		};
 
 		$scope.textAnalysis = function () {
 			inputText = document.getElementById('inputText').innerHTML;
 			if (inputText !== null && inputText !== "") {
+				$scope.startSpin();
 				rest.textAnalysis(inputText, $scope.textAnalysisSuccess);
 			}
 		};
@@ -121,6 +132,7 @@ angular.module('aas').controller('mainPanelController', [
 			}
 			$scope.outputText = 'Input:\n' + output + '\nNot found:\n' + content +
 				'\nSimilar words:\n' + similarWords;
+			$scope.stopSpin();
 		};
 
 		// $scope.isGraphLoaded = function () {
@@ -147,16 +159,7 @@ angular.module('aas').controller('mainPanelController', [
 			activityTimeout = setTimeout(inActive, waitingTime);
 		}
 
-		$scope.init = function (fileName) {
-			rest.loadGraph(fileName, $scope.initSuccess);
-		};
 
-		$scope.initSuccess = function () {
-			//TODO -> wyświetlić info o poprawnym wczytaniu grafu
-			$scope.isGraphLoadedSuccessfully = true;
-		};
-
-		$scope.init(fileName);
 
 		// $(document).bind('keypress', function () {
 		// 	resetActive();
@@ -178,5 +181,42 @@ angular.module('aas').controller('mainPanelController', [
 			}
 			//$('#site-wrapper').toggleClass('show-nav');
 		}
+
+		$scope.startSpin = function() {
+			if (!$scope.spinneractive) {
+				usSpinnerService.spin('spinner-1');
+			}
+		};
+
+		$scope.spinneractive = false;
+		$scope.stopSpin = function() {
+			if ($scope.spinneractive) {
+				usSpinnerService.stop('spinner-1');
+			}
+		};
+
+		$rootScope.$on('us-spinner:spin', function(event, key) {
+			$scope.spinneractive = true;
+		});
+
+		$rootScope.$on('us-spinner:stop', function(event, key) {
+			$scope.spinneractive = false;
+		});
+
+		$scope.init = function (fileName) {
+			$scope.spinneractive = false;
+			$timeout(function() {
+				$scope.startSpin();
+			}, 1000);
+			rest.loadGraph(fileName, $scope.initSuccess);
+		};
+
+		$scope.initSuccess = function () {
+			//TODO -> wyświetlić info o poprawnym wczytaniu grafu
+			$scope.isGraphLoadedSuccessfully = true;
+			$scope.stopSpin();
+		};
+
+		$scope.init(fileName);
 	}
 ]);
