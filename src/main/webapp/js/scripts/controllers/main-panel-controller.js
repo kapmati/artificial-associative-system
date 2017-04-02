@@ -6,7 +6,7 @@ angular.module('aas').controller('mainPanelController', [
 	'$scope', 'rest',
 	function ($scope, rest) {
 
-		var fileName = 'booksNew.ser';
+		var fileName = 'knowledgeSource.ser';
 		var inputText = null;
 		$scope.isGraphLoadedSuccessfully = false;
 		$scope.wordsAfterChecking = null;

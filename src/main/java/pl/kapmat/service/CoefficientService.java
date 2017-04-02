@@ -23,7 +23,8 @@ public class CoefficientService {
 		}
 		double sW = (2 * sE) / (secondNode.getLevel() + sE);
 
-		return new Coefficient(MathUtil.roundDouble(sW,8), MathUtil.roundDouble(sE,8));
+//		return new Coefficient(MathUtil.roundDouble(sW,8), MathUtil.roundDouble(sE,8));
+		return new Coefficient(sW, sE);
 	}
 
 	/**
@@ -33,7 +34,8 @@ public class CoefficientService {
 		for (Coefficient coeff : node.getNeighbourMap().values()) {
 			double sE = coeff.getSynapticEffectiveness();
 			double sW = (2 * sE) / (node.getLevel() + sE);
-			coeff.setSynapticWeight(MathUtil.roundDouble(sW,10));
+			coeff.setSynapticWeight(sW);
+//			coeff.setSynapticWeight(MathUtil.roundDouble(sW,10));
 		}
 	}
 }

@@ -27,7 +27,7 @@ public class GraphProgressChecker implements Runnable {
 					if (breakLoop) {
 						break;
 					}
-					Thread.sleep(5000);
+					Thread.sleep(15000);
 					System.out.println("[" + LocalDateTime.now().format(formatter) + "]" + " Graph progress: " + MathUtil.roundDouble((index/size) * 100, 3) + "% - sentences:" + index);
 				}
 				if (breakLoop) {

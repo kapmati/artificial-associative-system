@@ -30,6 +30,10 @@ angular.module('aas').service('rest', [
 			jsonPost('/finishWord', text, onSuccess);
 		};
 
+		this.nextWord = function (text, onSuccess) {
+			jsonPost('/nextWord', text, onSuccess);
+		};
+
 		this.checkWords = function (text, onSuccess) {
 			jsonPost('/wordsChecking', text, onSuccess);
 		};

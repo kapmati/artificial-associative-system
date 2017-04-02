@@ -9,9 +9,9 @@ import pl.kapmat.algorithm.AasGraph;
 import pl.kapmat.model.Language;
 import pl.kapmat.service.SentenceService;
 import pl.kapmat.util.GraphProgressChecker;
+import pl.kapmat.util.MathUtil;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Main controller
@@ -83,6 +83,19 @@ public class MainController {
 	public ResponseEntity<?> finishWord(@RequestBody String inputText) throws InterruptedException {
 //		aasGraph.readGraph("60k.ser");
 		return new ResponseEntity<>(aasGraph.finishWord(inputText), HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/nextWord", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<?> nextWord(@RequestBody String inputText) throws InterruptedException {
+		Map<String, Double> resultMap = (Map<String, Double>) aasGraph.finishWord(inputText).get("words");
+		List<Map<String, String>> resultList = new ArrayList<>();
+		for (Map.Entry<String, Double> entry : resultMap.entrySet()) {
+			Map<String, String> nextWordsMap = new LinkedHashMap<>();
+			nextWordsMap.put("name", entry.getKey());
+			nextWordsMap.put("coeff", "[" + MathUtil.roundDouble(entry.getValue(), 4) + "]");
+			resultList.add(nextWordsMap);
+		}
+		return new ResponseEntity<>(resultList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/wordsChecking", method = RequestMethod.POST, produces = "application/json")

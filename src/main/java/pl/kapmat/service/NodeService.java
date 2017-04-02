@@ -59,13 +59,13 @@ public class NodeService {
 		if (partOfWord.equalsIgnoreCase("nbsp")) {
 			return getBestNextWords(nodeList).entrySet().stream()
 					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-					.limit(20)
+					.limit(10)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} else {
 			return getBestNextWords(nodeList).entrySet().stream()
 					.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
 					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-					.limit(20)
+					.limit(10)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
 	}
@@ -92,7 +92,10 @@ public class NodeService {
 				}
 			}
 		}
-		return bestNodesMap;
+		return bestNodesMap.entrySet().stream()
+				.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+				.limit(10)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	public List<Node> similarWord(Node node, Set<Node> candidates) {
