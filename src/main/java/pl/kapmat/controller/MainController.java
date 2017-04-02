@@ -43,22 +43,22 @@ public class MainController {
 //	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/test.txt";
 	private static final Language LANGUAGE = Language.PL;
 
-	@RequestMapping(value = "/extend", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> extend(@RequestParam("extendBook") String extendBook) {
+	@RequestMapping(value = "/extendGraph", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<?> extendGraph(@RequestBody String fileName) {
 		String type = "book";
-		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + extendBook, LANGUAGE, type));
-		return new ResponseEntity<>("Main page - Artificial associative system", HttpStatus.OK);
+		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + fileName, LANGUAGE, type));
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/run", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<?> run(@RequestParam("text") String text) {
-		String textType = "s";
+	@RequestMapping(value = "/createGraph", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<?> createGraph(@RequestBody String fileName) {
+		String textType = "book";
 		if (textType.equalsIgnoreCase("book")) {
-			aasGraph.run(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + text, LANGUAGE, textType);
+			aasGraph.createGraph(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + fileName, LANGUAGE, textType);
 		} else {
-			aasGraph.run(System.getProperty("user.dir") + "/src/main/resources/text/" + text, LANGUAGE, textType);
+			aasGraph.createGraph(System.getProperty("user.dir") + "/src/main/resources/text/" + fileName, LANGUAGE, textType);
 		}
-		return new ResponseEntity<>("Main page - Artificial associative system", HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/insertData", method = RequestMethod.GET, produces = "application/json")
@@ -91,7 +91,7 @@ public class MainController {
 		List<Map<String, String>> resultList = new ArrayList<>();
 		for (Map.Entry<String, Double> entry : resultMap.entrySet()) {
 			Map<String, String> nextWordsMap = new LinkedHashMap<>();
-			nextWordsMap.put("name", entry.getKey());
+			nextWordsMap.put("name", entry.getKey().toLowerCase());
 			nextWordsMap.put("coeff", "[" + MathUtil.roundDouble(entry.getValue(), 4) + "]");
 			resultList.add(nextWordsMap);
 		}

@@ -5,12 +5,16 @@
 angular.module('aas').controller('graphController', [
 	'$scope', 'rest',
 	function ($scope, rest) {
+
+		var w = window.innerWidth - 60;
+		var h = window.innerHeight - 140;
+
 		var newParent = null;
 		var rootObjects = null;
 
-		var margin = {top: 20, right: 120, bottom: 20, left: 120},
-			width = 1360 - margin.right - margin.left,
-			height = 400 - margin.top - margin.bottom;
+		var margin = {top: 5, right: 50, bottom: 5, left: 50},
+			width = w - margin.right - margin.left,
+			height = h - margin.top - margin.bottom;
 
 		var i = 0,
 			duration = 750,
@@ -24,7 +28,7 @@ angular.module('aas').controller('graphController', [
 				return [d.y, d.x];
 			});
 
-		var svg = d3.select("body").append("svg")
+		var svg = d3.select("#sidebar-page-content").append("svg")
 			.attr("width", width + margin.right + margin.left)
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")

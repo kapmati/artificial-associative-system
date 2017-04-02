@@ -11,10 +11,28 @@ angular.module('aas').controller('mainPanelController', [
 		$scope.isGraphLoadedSuccessfully = false;
 		$scope.wordsAfterChecking = null;
 		$scope.outputText = '';
-		$scope.inputFile = false;
+		var inputFileName = false;
 
-		$scope.addInputFile = function () {
-			$scope.inputFile = document.getElementById('inputText').innerHTML = '';
+		$scope.createGraph = function () {
+			inputFileName = document.getElementById('inputFile').files[0].name;
+			if (inputFileName !== null && inputFileName !== "") {
+				rest.createGraph(inputFileName, $scope.createGraphSuccess);
+			}
+		};
+
+		$scope.createGraphSuccess = function () {
+			//TODO
+		};
+
+		$scope.extendGraph = function () {
+			inputFileName = document.getElementById('inputFile').files[0].name;
+			if (inputFileName !== null && inputFileName !== "") {
+				rest.extendGraph(inputFileName, $scope.extendGraphSuccess);
+			}
+		};
+
+		$scope.extendGraphSuccess = function () {
+			//TODO
 		};
 
 		$scope.clearInput = function () {

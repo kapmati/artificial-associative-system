@@ -18,6 +18,14 @@ angular.module('aas').service('rest', [
 			}).then(successHandler(onSuccess));
 		};
 
+		this.createGraph = function (fileName, onSuccess) {
+			jsonPost('/createGraph', fileName, onSuccess);
+		};
+
+		this.extendGraph = function (fileName, onSuccess) {
+			jsonPost('/extendGraph', fileName, onSuccess);
+		};
+
 		this.textAnalysis = function (text, onSuccess) {
 			jsonPost('/textAnalysis', text, onSuccess);
 		};

@@ -37,7 +37,7 @@ public class AasGraph {
 			'–', '—', '†', '•', '…', '\u2028', '▪', '♦'};
 	private static final int THRESHOLD = 1;
 
-	public void run(String path, Language lang, String type) {
+	public void createGraph(String path, Language lang, String type) {
 		//Load sentences from file
 		List<Sentence> sentences = sentenceService.getSentencesAfterCorrection(path, lang, type);
 
