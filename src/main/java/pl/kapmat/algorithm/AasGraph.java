@@ -54,12 +54,12 @@ public class AasGraph {
 		timer.showTime("Build graph");
 
 		timer.startCount();
-		nodeService.serializeSetOfNodes(nodeSet, "knowledgeSource.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "wPustyniBook.ser");
 		timer.endCount();
 		timer.showTime("Serialize graph");
 
 		timer.startCount();
-		Set<Node> newSet = nodeService.deserializeSetOfNodes("knowledgeSource.ser");
+		Set<Node> newSet = nodeService.deserializeSetOfNodes("wPustyniBook.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 		System.out.println("NodeSet size:" + nodeSet.size());
@@ -67,7 +67,7 @@ public class AasGraph {
 
 	public void extendGraph(List<Sentence> sentences) {
 		timer.startCount();
-		nodeSet = nodeService.deserializeSetOfNodes("booksNew.ser");
+		nodeSet = nodeService.deserializeSetOfNodes("knowledgeSource.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
@@ -77,12 +77,13 @@ public class AasGraph {
 		//Enable graph progress tracking
 		runGraphProgressCheckerThread(sentences.size());
 
+		System.out.println("START EXTENDING:" + nodeSet.size());
 		timer.startCount();
 		buildGraph(sentences);
 		timer.endCount();
 		timer.showTime("Extend graph [+" + sentences.size() + " sentences]");
 
-		nodeService.serializeSetOfNodes(nodeSet, "booksNew.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "knowledgeSource2.ser");
 		System.out.println("NodeSet size:" + nodeSet.size());
 	}
 
@@ -97,7 +98,7 @@ public class AasGraph {
 
 			words = sentence.getText().split(" ");
 			Node singleNode;
-			LinkedHashSet<Node> neighbourNodes = new LinkedHashSet<>();
+			List<Node> neighbourNodes = new ArrayList<>();
 			for (String word : words) {
 				word = word.trim();
 				if (!word.equals("")) {
@@ -127,7 +128,7 @@ public class AasGraph {
 		return newSet.size();
 	}
 
-	private void connectNeighbours(LinkedHashSet<Node> neighbourNodes) {
+	private void connectNeighbours(List<Node> neighbourNodes) {
 		int firstIndex = 0, secondIndex = 0;
 		for (Node mainNode : neighbourNodes) {
 			firstIndex++;
@@ -150,7 +151,7 @@ public class AasGraph {
 
 	public void readGraph(String graphName) {
 		if (nodeSet != null && nodeSet.isEmpty()) {
-			System.out.println("Reading data...");
+			System.out.println("Reading data... " + graphName);
 			timer.startCount();
 			nodeSet = nodeService.deserializeSetOfNodes(graphName);
 			timer.endCount();
@@ -239,7 +240,9 @@ public class AasGraph {
 					Map<Node, Double> nextWords = new LinkedHashMap<>(nodeService.getBestNextWords(inputNodes));
 					nextWords = nextWords.entrySet().stream()
 							.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x,y)-> {throw new AssertionError();}, LinkedHashMap::new));
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
+								throw new AssertionError();
+							}, LinkedHashMap::new));
 					if (nextWords.size() > 0) {
 						for (Node singleNode : similarNodes) {
 							if (nextWords.containsKey(singleNode)) {
@@ -305,7 +308,9 @@ public class AasGraph {
 			Map<Node, Double> bestWords = new LinkedHashMap<>(nodeService.getBestNextWordsUsingPart(nodeList, words[words.length - 1]));
 			bestWords = bestWords.entrySet().stream()
 					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x,y)-> {throw new AssertionError();}, LinkedHashMap::new));
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
+						throw new AssertionError();
+					}, LinkedHashMap::new));
 			Map<String, Double> resultMap = new LinkedHashMap<>();
 			for (Map.Entry<Node, Double> entry : bestWords.entrySet()) {
 				resultMap.put(entry.getKey().getWord(), entry.getValue());

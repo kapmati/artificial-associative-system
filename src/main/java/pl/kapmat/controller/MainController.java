@@ -45,8 +45,8 @@ public class MainController {
 
 	@RequestMapping(value = "/extendGraph", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> extendGraph(@RequestBody String fileName) {
-		String type = "book";
-		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + fileName, LANGUAGE, type));
+		String type = "s";
+		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(System.getProperty("user.dir") + "/src/main/resources/text/" + fileName, LANGUAGE, type));
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -115,6 +115,7 @@ public class MainController {
 //	@CrossOrigin(origins = "http://localhost:63342")
 	@RequestMapping(value = "/loadGraph", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> loadGraph(@RequestBody String fileName) throws InterruptedException {
+		System.out.println(fileName);
 		aasGraph.readGraph(fileName);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

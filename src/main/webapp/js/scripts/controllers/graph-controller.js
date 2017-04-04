@@ -52,27 +52,28 @@ angular.module('aas').controller('graphController', [
 			console.log(inputText.trim());
 			var inputArray = inputText.split(" ");
 			var inputJSON = {};
-			inputJSON.name = null;
-			rootObjects = null;
+			inputJSON.name = inputText;
+			rootObjects = {};
+			rootObjects.name = inputText;
 
-			for (var i = 0; i < inputArray.length; i++) {
-				var child = {};
-				var children = [];
-				if (inputJSON.name === null) {
-					rootObjects = inputJSON;
-					inputJSON.name = inputArray[i];
-				} else {
-					child.name = inputArray[i];
-					children.push(child);
-					inputJSON.children = children;
-					inputJSON = child;
-				}
-				if (i !== inputArray.length) {
-					inputJSON.children = null;
-				} else {
-
-				}
-			}
+			// for (var i = 0; i < inputArray.length; i++) {
+			// 	var child = {};
+			// 	var children = [];
+			// 	if (inputJSON.name === null) {
+			// 		rootObjects = inputJSON;
+			// 		inputJSON.name = inputArray[i];
+			// 	} else {
+			// 		child.name = inputArray[i];
+			// 		children.push(child);
+			// 		inputJSON.children = children;
+			// 		inputJSON = child;
+			// 	}
+			// 	if (i !== inputArray.length) {
+			// 		inputJSON.children = null;
+			// 	} else {
+			//
+			// 	}
+			// }
 
 			root = rootObjects;
 			root.x0 = height / 2;

@@ -12,5 +12,8 @@
     "d3": "3.5.17",
     "angular-ui-router": "1.0.0-rc.1",
     "spin-js": "2.0.1"
+  },
+  "resolutions": {
+    "angular": "^1.4.8"
   }
 }

@@ -6,7 +6,7 @@ angular.module('aas').controller('mainPanelController', [
 	'$rootScope', '$scope', 'rest', 'usSpinnerService', '$timeout',
 	function ($rootScope, $scope, rest, usSpinnerService, $timeout) {
 
-		var fileName = 'knowledgeSource.ser';
+		var fileName = 'wPustyniBook.ser';
 		var inputText = null;
 		$scope.isGraphLoadedSuccessfully = false;
 		$scope.wordsAfterChecking = null;
@@ -56,26 +56,33 @@ angular.module('aas').controller('mainPanelController', [
 			var text = document.getElementById('inputText').innerHTML;
 			//TODO tymczasowo string jest rozszerzany aby korektor uwzględniał wszystie słowa
 			text = "A " + text + " Z";
+			var outputText = '';
 			var tooltipWords = '';
 			for (var key in data) {
+				outputText =  outputText + key + ':';
 				if (data.hasOwnProperty(key)) {
 					tooltipWords = '';
+					outputText = outputText + '______________';
 					data[key].forEach(function (singleValue) {
-						tooltipWords = tooltipWords + '<input type="radio" value="test1">' + singleValue + '<br><br>';
+						outputText = outputText + singleValue;
 					});
 					var reg = new RegExp(' ' + key + ' ', "ig");
 					text = text.replace(reg, ' ' +
 						'<span class="hover" style="color:#ff6b00;">' + key +
 						'<span class="tooltip">' +
 						'<form action="">' +
-						tooltipWords +
+						// tooltipWords +
 						'</form>' +
 						'</span>' +
 						'</span> ');
+
 				}
+				outputText = outputText + '\n';
 			}
 			text = text.substring(2, text.length - 2);
 			document.getElementById("inputText").innerHTML = text;
+			console.log(outputText);
+			$scope.outputText = outputText;
 			$scope.stopSpin();
 		};
 

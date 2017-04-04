@@ -1,5 +1,5 @@
 1	Który z operatorów będzie udostępniał swoją infrastrukturę dowiemy się jeszcze w tym tygodniu.
-2	Ale my nic nikomu nie jesteśmy winni - tłumaczył Owsiak.
+2	Ale my nic nikomu nie jestesmy winni - tlumaczyl Owsiak.
 3	Kim Dzong Il wciąż jeszcze nie może szantażować USA bezpośrednim atakiem.
 4	Wybieramy opcję Gaussian i zaznaczamy pole wyboru Monochromatic, a następnie klikamy przycisk OK. Ponieważ uzyskany efekt jest zbyt drobny, stosujemy efekt Filter: Blur: Gaussian Blur dla tej warstwy.
 5	Gdy skarcił szefa PO Donalda Tuska za porównywanie PiS do bolszewików, tłum skandował "Precz z Tuskiem."
@@ -27,4 +27,4 @@
 27	Według rzecznika LPR apelowanie do Andrzeja Leppera o zrzeczenie się immunitetu, zanim pojawią się zarzuty prokuratorskie, jest nielogiczne i nie fair.
 28	Z jednej strony Koran nadał kobiecie liczne prawa: prawo dziedziczenia, prawo do kształcenia się czy równouprawnienie w kwestiach religijnych.
 29	Mogą być jednak spokojne jeszcze przynajmniej przez kilka dni.
-30	Każdy z nich będzie posiadał identyfikator.
+30	Kazdy z nich bedzie posiadal identyfikator.

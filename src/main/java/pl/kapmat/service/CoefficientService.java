@@ -22,9 +22,12 @@ public class CoefficientService {
 			sE = 1 / tau;
 		}
 		double sW = (2 * sE) / (secondNode.getLevel() + sE);
-
+		if (tau == 1) {
+			return new Coefficient(sW, sE, true);
+		} else {
+			return new Coefficient(sW, sE, false);
+		}
 //		return new Coefficient(MathUtil.roundDouble(sW,8), MathUtil.roundDouble(sE,8));
-		return new Coefficient(sW, sE);
 	}
 
 	/**

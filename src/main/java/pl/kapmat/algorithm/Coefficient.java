@@ -13,10 +13,12 @@ public class Coefficient implements Serializable {
 
 	private double synapticWeight;
 	private double synapticEffectiveness;
+	private boolean nearWord = true;
 
-	public Coefficient(double synapticWeight, double synapticEffectiveness) {
+	public Coefficient(double synapticWeight, double synapticEffectiveness, boolean nearWord) {
 		this.synapticWeight = synapticWeight;
 		this.synapticEffectiveness = synapticEffectiveness;
+		this.nearWord = nearWord;
 	}
 
 	public double getSynapticWeight() {
@@ -35,11 +37,20 @@ public class Coefficient implements Serializable {
 		this.synapticEffectiveness = synapticEffectiveness;
 	}
 
+	public boolean isNearWord() {
+		return nearWord;
+	}
+
+	public void setNearWord(boolean nearWord) {
+		this.nearWord = nearWord;
+	}
+
 	@Override
 	public String toString() {
 		return "Coefficient{" +
 				"synapticWeight=" + synapticWeight +
 				", synapticEffectiveness=" + synapticEffectiveness +
+				", nearWord=" + nearWord +
 				'}';
 	}
 }

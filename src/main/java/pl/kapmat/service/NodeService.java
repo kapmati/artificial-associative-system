@@ -75,7 +75,9 @@ public class NodeService {
 		Map<Node, Coefficient> lastNodeNeighbours = lastNode.getNeighbourMap();
 		Map<Node, Double> bestNodesMap = new HashMap<>();
 		for (Map.Entry<Node, Coefficient> nodeEntry : lastNodeNeighbours.entrySet()) {
-			bestNodesMap.put(nodeEntry.getKey(), nodeEntry.getValue().getSynapticWeight());
+			if (nodeEntry.getValue().isNearWord()) {
+				bestNodesMap.put(nodeEntry.getKey(), nodeEntry.getValue().getSynapticWeight());
+			}
 		}
 		for (Node node : nodeList) {
 			if (!node.equals(lastNode)) {

@@ -42,7 +42,7 @@
 					<li ng-controller="graphController">
 						<a href="" ng-click="drawGraph()"
 						   class="icon-background">Draw graph<span class="pull-right"><i
-								class="fa fa-code-fork icon-background"></i></span></a>
+								class="fa fa-code-fork icon-background fa-rotate-90"></i></span></a>
 					</li>
 					<li><a href="" ng-click="cleanInput()"
 						   class="icon-background">Clean input<span class="pull-right"><i
@@ -59,9 +59,9 @@
 
 				<div id="inputText" contenteditable=true spellcheck=false></div>
 				<br>
-				<!--<div id="outputText" spellcheck=false ng-model="outputText">-->
-				<!--<pre>{{outputText}}</pre>-->
-				<!--</div>-->
+				<div id="outputText" spellcheck=false ng-model="outputText">
+					<p>{{outputText}}</p>
+				</div>
 			</div>
 
 		</div>
