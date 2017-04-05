@@ -57,28 +57,48 @@ public class NodeService {
 
 	public Map<Node, Double> getBestNextWordsUsingPart(List<Node> nodeList, String partOfWord) {
 		if (partOfWord.equalsIgnoreCase("nbsp")) {
-			return getBestNextWords(nodeList).entrySet().stream()
+			return getBestNextWords(nodeList, null).entrySet().stream()
 					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-					.limit(10)
+					.limit(20)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} else {
-			return getBestNextWords(nodeList).entrySet().stream()
-					.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
+			return getBestNextWords(nodeList, partOfWord).entrySet().stream()
 					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-					.limit(10)
+					.limit(20)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		}
 	}
 
-	public Map<Node, Double> getBestNextWords(List<Node> nodeList) {
+	public Map<Node, Double> getBestNextWords(List<Node> nodeList, String invalidWordPart) {
 		Node lastNode = nodeList.get(nodeList.size() - 1);
 		Map<Node, Coefficient> lastNodeNeighbours = lastNode.getNeighbourMap();
-		Map<Node, Double> bestNodesMap = new HashMap<>();
-		for (Map.Entry<Node, Coefficient> nodeEntry : lastNodeNeighbours.entrySet()) {
-			if (nodeEntry.getValue().isNearWord()) {
-				bestNodesMap.put(nodeEntry.getKey(), nodeEntry.getValue().getSynapticWeight());
+		Map<Node, Double> bestNodesMap = new LinkedHashMap<>();
+		char firstLetter;
+		if (invalidWordPart != null) {
+			firstLetter = Character.toUpperCase(invalidWordPart.charAt(0));
+			for (Map.Entry<Node, Coefficient> nodeEntry : lastNodeNeighbours.entrySet()) {
+				if (nodeEntry.getValue().isNearWord() && firstLetter == nodeEntry.getKey().getWord().charAt(0)) {
+					bestNodesMap.put(nodeEntry.getKey(), nodeEntry.getValue().getSynapticEffectiveness());
+				}
+			}
+		} else {
+			for (Map.Entry<Node, Coefficient> nodeEntry : lastNodeNeighbours.entrySet()) {
+				if (nodeEntry.getValue().isNearWord()) {
+					bestNodesMap.put(nodeEntry.getKey(), nodeEntry.getValue().getSynapticEffectiveness());
+				}
 			}
 		}
+
+
+		bestNodesMap = bestNodesMap.entrySet().stream()
+				.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+				.limit(100)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
+					throw new AssertionError();
+				}, LinkedHashMap::new));
+
+		bestNodesMap.entrySet().forEach(n -> n.setValue(lastNodeNeighbours.get(n.getKey()).getSynapticWeight()));
+
 		for (Node node : nodeList) {
 			if (!node.equals(lastNode)) {
 				for (Map.Entry<Node, Coefficient> nodeEntry : node.getNeighbourMap().entrySet()) {
@@ -89,78 +109,66 @@ public class NodeService {
 								break;
 							}
 						}
-
 					}
 				}
 			}
 		}
+
 		return bestNodesMap.entrySet().stream()
 				.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-				.limit(10)
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+				.limit(50)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
+					throw new AssertionError();
+				}, LinkedHashMap::new));
+	}
+
+	public Map<Node, Double> getBestSimilarWord(List<Node> inputNodes, Node node, Set<Node> candidates) {
+		List<Node> similarWords = similarWord(node, candidates);
+		Map<Node, Double> resultMap = new LinkedHashMap<>();
+
+		for (Node n : inputNodes) {
+			for (Node similarWord : similarWords) {
+				if (n.getNeighbourMap().containsKey(similarWord)) {
+					if (resultMap.containsKey(similarWord)) {
+						resultMap.put(similarWord, n.getNeighbourMap().get(similarWord).getSynapticWeight() + resultMap.get(similarWord));
+					} else {
+						resultMap.put(similarWord, n.getNeighbourMap().get(similarWord).getSynapticWeight());
+					}
+				}
+			}
+		}
+
+		return resultMap;
 	}
 
 	public List<Node> similarWord(Node node, Set<Node> candidates) {
 		String word = node.getWord();
 		char[] wordArray = word.toCharArray();
 		int amountOfSameLetter;
-		int samePosition;
 		Map<Node, Integer> similarityMap = new HashMap<>();
-		Map<Node, Integer> positionMap = new HashMap<>();
 		for (Node n : candidates) {
-			if (!n.getWord().equals(node.getWord())) {
+			if (!n.getWord().equals(node.getWord()) && (n.getWord().length() <= word.length() + 1) || (n.getWord().length() <= word.length() - 1)) {
 				char[] candidateArray = n.getWord().toCharArray();
 				amountOfSameLetter = 0;
-				samePosition = 0;
 				for (int i = 0; i < wordArray.length; i++) {
 					for (int j = 0; j < candidateArray.length; j++) {
 						if (wordArray[i] == candidateArray[j]) {
-							if (i == j) {
-								samePosition++;
-							}
 							amountOfSameLetter++;
 							break;
 						}
 					}
 				}
-				positionMap.put(n, samePosition);
 				similarityMap.put(n, amountOfSameLetter);
 			}
 		}
 		int maxValue = similarityMap.entrySet().stream().max((e1, e2) -> e1.getValue() > e2.getValue() ? 1 : -1).get().getValue();
 
-		List<Node> similarityList = similarityMap.entrySet().stream()
-				.filter(e -> e.getValue().equals(maxValue - 1) && e.getKey().getWord().length() <= word.length() + 1)
+		List<Node> similarityList = similarityMap.entrySet().parallelStream()
+				.filter(e -> e.getValue().equals(maxValue - 1) || e.getValue().equals(maxValue))
 				.map(Map.Entry::getKey)
-				.collect(Collectors.toList());
-
-		int maxPosition = positionMap.entrySet().stream().max((e1, e2) -> e1.getValue() > e2.getValue() ? 1 : -1).get().getValue();
-		List<Node> positionList = positionMap.entrySet().stream()
-				.filter(e -> e.getValue().equals(maxPosition) && e.getKey().getWord().length() <= word.length() + 2)
-				.map(Map.Entry::getKey)
-				.collect(Collectors.toList());
-
-		Comparator<Node> wordComparator = Comparator.comparing(Node::getWord);
-		Collections.sort(similarityList, wordComparator);
-		Collections.sort(positionList, wordComparator);
-
-		//Słowa o takiej samej pierwszej literze
-		List<Node> secondPart = similarityList.stream()
-				.filter(e -> e.getWord().charAt(0) == node.getWord().charAt(0))
-				.collect(Collectors.toList());
-
-		//Słowa o takiej samej długości i pierwszej literze
-		List<Node> bestPart = secondPart.stream()
-				.filter(e -> e.getWord().length() == node.getWord().length())
 				.collect(Collectors.toList());
 
 		List<Node> result = new ArrayList<>();
-		result.addAll(bestPart);
-		positionList.removeAll(bestPart);
-		result.addAll(positionList);
-		secondPart.removeAll(result);
-		result.addAll(secondPart);
-		similarityList.removeAll(result);
 		result.addAll(similarityList);
 
 		return result;

@@ -58,10 +58,10 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Serialize graph");
 
-		timer.startCount();
-		Set<Node> newSet = nodeService.deserializeSetOfNodes("wPustyniBook.ser");
-		timer.endCount();
-		timer.showTime("Deserialize graph");
+//		timer.startCount();
+//		Set<Node> newSet = nodeService.deserializeSetOfNodes("wPustyniBook.ser");
+//		timer.endCount();
+//		timer.showTime("Deserialize graph");
 		System.out.println("NodeSet size:" + nodeSet.size());
 	}
 
@@ -160,58 +160,59 @@ public class AasGraph {
 	}
 
 	public List<Map<String, Object>> textAnalysis(String inputSentence) {
-
-		List<Map<String, Object>> responseList = new ArrayList<>();
-
-		List<Node> inputNodes = new ArrayList<>();
-		String[] sentences = inputSentence.split("\\n");
-		for (String strSentence : sentences) {
-			Map<String, Object> responseMap = new HashMap<>();
-			responseMap.put("input", strSentence);
-			Sentence sentence = new Sentence(strSentence, Language.PL);
-			sentence = sentenceService.deleteChars(sentence, charsToDelete);
-			String[] words = sentence.getText().split(" ");
-			List<String> notFoundList = new ArrayList<>();
-			List<String> bestNextList = new ArrayList<>();
-			List<String> similarWordList = new ArrayList<>();
-			for (int i = 0; i < words.length; i++) {
-				Node node = new Node(words[i].toUpperCase());
-				String similar;
-				boolean invalidWord = true;
-				if (nodeSet.contains(node)) {
-					Node oldNode = nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get();
-					if (oldNode.getLevel() > THRESHOLD) {
-						inputNodes.add(nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get());
-						invalidWord = false;
-					}
-				}
-				if (invalidWord) {
-					List<Node> similarNodes = nodeService.similarWord(node, nodeSet);
-					similar = null;
-					for (Node n : similarNodes) {
-						if (similar != null) {
-							similar = similar + ", " + n.getWord() + "(" + n.getLevel() + ")";
-						} else {
-							similar = n.getWord() + "(" + n.getLevel() + ")";
-						}
-					}
-					similarWordList.add(similar + "|\n\n");
-					if (i > 0) {
-						Node oldNode = new Node(words[i - 1].toUpperCase());
-						Map<Node, Coefficient> bestNextNodes = nodeService.getBestNeighbours(nodeSet.stream().filter(n -> n.getWord().equals(oldNode.getWord())).findFirst().orElse(new Node("!!!")));
-						for (Map.Entry next : bestNextNodes.entrySet()) {
-							bestNextList.add(((Node) next.getKey()).getWord());
-						}
-						notFoundList.add(words[i]);
-					}
-				}
-			}
-			responseMap.put("similarWords", similarWordList);
-			responseMap.put("notFound", notFoundList);
-
-			responseList.add(responseMap);
-		}
-		return responseList;
+//
+//		List<Map<String, Object>> responseList = new ArrayList<>();
+//
+//		List<Node> inputNodes = new ArrayList<>();
+//		String[] sentences = inputSentence.split("\\n");
+//		for (String strSentence : sentences) {
+//			Map<String, Object> responseMap = new HashMap<>();
+//			responseMap.put("input", strSentence);
+//			Sentence sentence = new Sentence(strSentence, Language.PL);
+//			sentence = sentenceService.deleteChars(sentence, charsToDelete);
+//			String[] words = sentence.getText().split(" ");
+//			List<String> notFoundList = new ArrayList<>();
+//			List<String> bestNextList = new ArrayList<>();
+//			List<String> similarWordList = new ArrayList<>();
+//			for (int i = 0; i < words.length; i++) {
+//				Node node = new Node(words[i].toUpperCase());
+//				String similar;
+//				boolean invalidWord = true;
+//				if (nodeSet.contains(node)) {
+//					Node oldNode = nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get();
+//					if (oldNode.getLevel() > THRESHOLD) {
+//						inputNodes.add(nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get());
+//						invalidWord = false;
+//					}
+//				}
+//				if (invalidWord) {
+//					List<Node> similarNodes = nodeService.similarWord(node, nodeSet);
+//					similar = null;
+//					for (Node n : similarNodes) {
+//						if (similar != null) {
+//							similar = similar + ", " + n.getWord() + "(" + n.getLevel() + ")";
+//						} else {
+//							similar = n.getWord() + "(" + n.getLevel() + ")";
+//						}
+//					}
+//					similarWordList.add(similar + "|\n\n");
+//					if (i > 0) {
+//						Node oldNode = new Node(words[i - 1].toUpperCase());
+//						Map<Node, Coefficient> bestNextNodes = nodeService.getBestNeighbours(nodeSet.stream().filter(n -> n.getWord().equals(oldNode.getWord())).findFirst().orElse(new Node("!!!")));
+//						for (Map.Entry next : bestNextNodes.entrySet()) {
+//							bestNextList.add(((Node) next.getKey()).getWord());
+//						}
+//						notFoundList.add(words[i]);
+//					}
+//				}
+//			}
+//			responseMap.put("similarWords", similarWordList);
+//			responseMap.put("notFound", notFoundList);
+//
+//			responseList.add(responseMap);
+//		}
+//		return responseList;
+		return  null;
 	}
 
 	public Map<String, List<String>> findBetterWords(String inputSentence) {
@@ -236,27 +237,44 @@ public class AasGraph {
 					}
 				}
 				if (invalidWord) {
-					List<Node> similarNodes = nodeService.similarWord(node, nodeSet);
-					Map<Node, Double> nextWords = new LinkedHashMap<>(nodeService.getBestNextWords(inputNodes));
-					nextWords = nextWords.entrySet().stream()
-							.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
-								throw new AssertionError();
-							}, LinkedHashMap::new));
+					Map<Node, Double> bestSimilarNodes = new LinkedHashMap<>(nodeService.getBestSimilarWord(inputNodes, node, nodeSet));
+					Map<Node, Double> nextWords = new LinkedHashMap<>(nodeService.getBestNextWords(inputNodes, node.getWord()));
+
+					Map<Node, Double> bestsOfTheBests = new LinkedHashMap<>();
 					if (nextWords.size() > 0) {
-						for (Node singleNode : similarNodes) {
-							if (nextWords.containsKey(singleNode)) {
-								similar = singleNode.getWord() + "(" + singleNode.getLevel() + ")[" + nextWords.get(singleNode) + "]";
-								similarWordList.add(similar);
+						for (Map.Entry<Node, Double> entry : bestSimilarNodes.entrySet()) {
+							if (nextWords.containsKey(entry.getKey())) {
+								bestsOfTheBests.put(entry.getKey(), entry.getValue());
 							}
 						}
 					}
-					if (similarWordList.size() < 10) {
-						for (int j = 0; j < ((similarNodes.size() < 10) ? similarNodes.size() : 10); j++) {
-							similar = similarNodes.get(j).getWord() + "(" + similarNodes.get(j).getLevel() + ")[" + nextWords.get(similarNodes.get(j)) + "]*";
+
+					bestsOfTheBests = bestsOfTheBests.entrySet().stream()
+							.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+							.limit(20)
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
+								throw new AssertionError();
+							}, LinkedHashMap::new));
+
+					bestSimilarNodes = bestSimilarNodes.entrySet().stream()
+							.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+							.limit(20)
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
+								throw new AssertionError();
+							}, LinkedHashMap::new));
+
+					for (Map.Entry<Node, Double> entry : bestsOfTheBests.entrySet()) {
+						if (!bestSimilarNodes.containsKey(entry.getKey())) {
+							similar = entry.getKey().getWord() + "(" + entry.getKey().getLevel() + ")[" + entry.getValue() + "]";
 							similarWordList.add(similar);
 						}
 					}
+
+					for (Map.Entry<Node, Double> entry : bestSimilarNodes.entrySet()) {
+						similar = entry.getKey().getWord() + "(" + entry.getKey().getLevel() + ")[" + entry.getValue() + "]";
+						similarWordList.add(similar);
+					}
+
 					responseMap.put(words[i], similarWordList);
 				}
 			}
