@@ -174,4 +174,16 @@ public class NodeService {
 		return result;
 	}
 
+	public Map<Node, Double> checkNextPartOfContext(Map<Node, Double> bestNodes, List<String> otherWords) {
+		Map<Node, Double> bestNewNodes = new LinkedHashMap<>();
+		for (Map.Entry<Node, Double> entry : bestNodes.entrySet()) {
+			if (entry.getKey().getNeighbourMap().entrySet().stream().anyMatch(e -> otherWords.contains(e.getKey().getWord()))) {
+				bestNewNodes.put(entry.getKey(), entry.getValue() +
+						entry.getKey().getNeighbourMap().entrySet().stream()
+								.filter(e -> otherWords.contains(e.getKey().getWord())).findFirst().get().getValue().getSynapticWeight());
+			}
+		}
+		return bestNewNodes;
+	}
+
 }

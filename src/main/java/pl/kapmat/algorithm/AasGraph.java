@@ -237,8 +237,19 @@ public class AasGraph {
 					}
 				}
 				if (invalidWord) {
+					List<String> otherWords = new ArrayList<>();
+					for (int j = i; j <words.length; j++) {
+						Node newNode = new Node(words[j].toUpperCase());
+						if (nodeSet.contains(newNode)) {
+							otherWords.add(newNode.getWord());
+						}
+					}
 					Map<Node, Double> bestSimilarNodes = new LinkedHashMap<>(nodeService.getBestSimilarWord(inputNodes, node, nodeSet));
 					Map<Node, Double> nextWords = new LinkedHashMap<>(nodeService.getBestNextWords(inputNodes, node.getWord()));
+
+					//kontekst z kolejnymi poprawnymi wyrazami
+					Map<Node, Double> bestSimilarNodesNext = nodeService.checkNextPartOfContext(bestSimilarNodes, otherWords);
+					Map<Node, Double> nextWordsNext = nodeService.checkNextPartOfContext(nextWords, otherWords);
 
 					Map<Node, Double> bestsOfTheBests = new LinkedHashMap<>();
 					if (nextWords.size() > 0) {
@@ -249,30 +260,40 @@ public class AasGraph {
 						}
 					}
 
-					bestsOfTheBests = bestsOfTheBests.entrySet().stream()
-							.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-							.limit(20)
-							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
-								throw new AssertionError();
-							}, LinkedHashMap::new));
+					bestSimilarNodes = sortMapByValue(bestSimilarNodes);
+					bestSimilarNodesNext = sortMapByValue(bestSimilarNodesNext);
+					nextWordsNext = sortMapByValue(nextWordsNext);
+					bestsOfTheBests = sortMapByValue(bestsOfTheBests);
 
-					bestSimilarNodes = bestSimilarNodes.entrySet().stream()
-							.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
-							.limit(20)
-							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
-								throw new AssertionError();
-							}, LinkedHashMap::new));
+					List<Node> addedNodes = new ArrayList<>();
+					for (Map.Entry<Node, Double> entry : bestSimilarNodesNext.entrySet()) {
+						addedNodes.add(entry.getKey());
+						similar = entry.getKey().getWord() + "(" + entry.getKey().getLevel() + ")[" + entry.getValue() + "]";
+						similarWordList.add(similar);
+					}
 
 					for (Map.Entry<Node, Double> entry : bestsOfTheBests.entrySet()) {
-						if (!bestSimilarNodes.containsKey(entry.getKey())) {
+						if (!addedNodes.contains(entry.getKey())) {
+							addedNodes.add(entry.getKey());
+							similar = entry.getKey().getWord() + "(" + entry.getKey().getLevel() + ")[" + entry.getValue() + "]";
+							similarWordList.add(similar);
+						}
+					}
+
+					for (Map.Entry<Node, Double> entry : nextWordsNext.entrySet()) {
+						if (!addedNodes.contains(entry.getKey())) {
+							addedNodes.add(entry.getKey());
 							similar = entry.getKey().getWord() + "(" + entry.getKey().getLevel() + ")[" + entry.getValue() + "]";
 							similarWordList.add(similar);
 						}
 					}
 
 					for (Map.Entry<Node, Double> entry : bestSimilarNodes.entrySet()) {
-						similar = entry.getKey().getWord() + "(" + entry.getKey().getLevel() + ")[" + entry.getValue() + "]";
-						similarWordList.add(similar);
+						if (!addedNodes.contains(entry.getKey())) {
+							addedNodes.add(entry.getKey());
+							similar = entry.getKey().getWord() + "(" + entry.getKey().getLevel() + ")[" + entry.getValue() + "]";
+							similarWordList.add(similar);
+						}
 					}
 
 					responseMap.put(words[i], similarWordList);
@@ -283,6 +304,14 @@ public class AasGraph {
 		return responseMap;
 	}
 
+	private Map<Node, Double> sortMapByValue(Map<Node, Double> map) {
+		return map.entrySet().stream()
+				.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+				.limit(20)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
+					throw new AssertionError();
+				}, LinkedHashMap::new));
+	}
 //	public Map<Node, Double> findNextWords(List<Node> inputNodesPart) {
 //		Map<Node, Double> responseMap = new HashMap<>();
 //
