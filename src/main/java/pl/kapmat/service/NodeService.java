@@ -62,7 +62,8 @@ public class NodeService {
 					.limit(20)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} else {
-			return getBestNextWords(nodeList, partOfWord).entrySet().stream()
+			return getBestNextWords(nodeList, null).entrySet().stream()
+					.filter(n -> n.getKey().getWord().startsWith(partOfWord.toUpperCase()))
 					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
 					.limit(20)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

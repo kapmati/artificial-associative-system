@@ -67,7 +67,7 @@ public class AasGraph {
 
 	public void extendGraph(List<Sentence> sentences) {
 		timer.startCount();
-		nodeSet = nodeService.deserializeSetOfNodes("knowledgeSource.ser");
+		nodeSet = nodeService.deserializeSetOfNodes("knowledgeSource300.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
@@ -83,7 +83,7 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Extend graph [+" + sentences.size() + " sentences]");
 
-		nodeService.serializeSetOfNodes(nodeSet, "knowledgeSource2.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "knowledgeSource400.ser");
 		System.out.println("NodeSet size:" + nodeSet.size());
 	}
 
@@ -355,6 +355,7 @@ public class AasGraph {
 			Map<Node, Double> bestWords = new LinkedHashMap<>(nodeService.getBestNextWordsUsingPart(nodeList, words[words.length - 1]));
 			bestWords = bestWords.entrySet().stream()
 					.sorted(Map.Entry.<Node, Double>comparingByValue().reversed())
+					.limit(7)
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> {
 						throw new AssertionError();
 					}, LinkedHashMap::new));

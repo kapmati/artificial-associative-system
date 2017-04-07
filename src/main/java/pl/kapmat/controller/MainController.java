@@ -52,7 +52,7 @@ public class MainController {
 
 	@RequestMapping(value = "/createGraph", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> createGraph(@RequestBody String fileName) {
-		String textType = "book";
+		String textType = "s";
 		if (textType.equalsIgnoreCase("book")) {
 			aasGraph.createGraph(System.getProperty("user.dir") + "/src/main/resources/text/Books/" + fileName, LANGUAGE, textType);
 		} else {
@@ -116,7 +116,7 @@ public class MainController {
 	@RequestMapping(value = "/loadGraph", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> loadGraph(@RequestBody String fileName) throws InterruptedException {
 		System.out.println(fileName);
-		aasGraph.readGraph(fileName);
+		//aasGraph.readGraph(fileName);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

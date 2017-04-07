@@ -119,6 +119,13 @@
 	transition: .5s ease all;
 }
 
+#d3-graph {
+	width: 100%;
+	border:2px solid #000;
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
 #page-content {
 	padding: 5px;
 }

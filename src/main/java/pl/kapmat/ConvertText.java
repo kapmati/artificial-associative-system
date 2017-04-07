@@ -2,9 +2,12 @@ package pl.kapmat;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Mateusz Kaproń
@@ -14,10 +17,31 @@ public class ConvertText {
 
 	private static final String PATH = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_1M-sentences.txt";
 	private static final String PATH_OUTPUT = System.getProperty("user.dir") + "/src/main/resources/text/pol_newscrawl_2011_1M-sentences";
+	private static final String BOOK_DIRECTORY_PATH = System.getProperty("user.dir") + "/src/main/resources/text/Books";
+	private static final String ALL_BOOKS = System.getProperty("user.dir") + "/src/main/resources/text/allBooks.txt";
 
 	public static void main(String[] args) throws IOException {
 //		Files.write(Paths.get(PATH_OUTPUT), Files.readAllLines(Paths.get(PATH)).stream().filter(ConvertText::containPolishLetter).collect(Collectors.toList()));
+		mergeFiles();
+	}
 
+	public static void mergeFiles() throws IOException {
+		List<String> inputList = new ArrayList<>();
+		try(Stream<Path> paths = Files.walk(Paths.get(BOOK_DIRECTORY_PATH))) {
+			paths.forEach(filePath -> {
+				if (Files.isRegularFile(filePath)) {
+					try {
+						inputList.addAll(Files.readAllLines(filePath));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+		Files.write(Paths.get(ALL_BOOKS), inputList.stream().filter(i -> !i.isEmpty()).collect(Collectors.toList()));
+	}
+
+	public static void divideBigFile() throws IOException {
 		List<String> inputList = Files.readAllLines(Paths.get(PATH));
 		List<String> polishSentences = inputList.stream().filter(ConvertText::containPolishLetter).collect(Collectors.toList());
 		int parts = 10;

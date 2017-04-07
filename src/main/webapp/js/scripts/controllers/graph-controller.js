@@ -6,8 +6,8 @@ angular.module('aas').controller('graphController', [
 	'$scope', 'rest',
 	function ($scope, rest) {
 
-		var w = window.innerWidth - 60;
-		var h = window.innerHeight - 140;
+		var w = (window.innerWidth - 60)*4;
+		var h = window.innerHeight - 200;
 
 		var newParent = null;
 		var rootObjects = null;
@@ -28,7 +28,7 @@ angular.module('aas').controller('graphController', [
 				return [d.y, d.x];
 			});
 
-		var svg = d3.select("#sidebar-page-content").append("svg")
+		var svg = d3.select("#d3-graph").append("svg")
 			.attr("width", width + margin.right + margin.left)
 			.attr("height", height + margin.top + margin.bottom)
 			.append("g")
@@ -47,7 +47,7 @@ angular.module('aas').controller('graphController', [
 		}
 
 		$scope.drawGraph = function () {
-			var inputText = document.getElementById('inputText').innerHTML.replace('&nbsp;', '');
+			var inputText = document.getElementById('inputText').innerHTML.replace('&nbsp;', '').replace('<br>', '');
 			console.log(inputText);
 			console.log(inputText.trim());
 			var inputArray = inputText.split(" ");
@@ -194,10 +194,6 @@ angular.module('aas').controller('graphController', [
 			});
 		}
 
-		var numbers = [
-			{name: "First"}
-		];
-
 		function click(d) {
 			if (d.children) {
 				d._children = d.children;
@@ -234,7 +230,6 @@ angular.module('aas').controller('graphController', [
 				}
 			}
 			// update(d);
-			console.log(8);
 		}
 
 		$scope.nextWord = function (words, node) {
@@ -244,21 +239,16 @@ angular.module('aas').controller('graphController', [
 
 		$scope.nextWordSuccess = function (data) {
 			$scope.stopSpin();
-			console.log(5);
-			console.log('data');
-			console.log(data);
-			console.log(numbers);
-			console.log(newParent);
 			newParent.children = data;
 			newParent._children = null;
 			update(newParent);
 		};
 
-		$scope.updateGraph = function updateGraph(data, node) {
-			console.log('11');
-			console.log(data);
-			console.log(node);
-		}
+		// $scope.updateGraph = function updateGraph(data, node) {
+		// 	console.log('11');
+		// 	console.log(data);
+		// 	console.log(node);
+		// }
 
 	}
 
