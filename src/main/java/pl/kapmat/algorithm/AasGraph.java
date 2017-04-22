@@ -35,7 +35,7 @@ public class AasGraph {
 	private char[] charsToDelete = {'-', ',', '.', ':', ';', '(', ')', '{', '}', '[', ']', '+', '=', '_', '<', '>', '|',
 			'/', '\\', '*', '\'', '?', '"', '!', '«', '↑', '*', '.', '$', '@', '%', '&', '–', '§', '»', '„', '“', '¿',
 			'–', '—', '†', '•', '…', '\u2028', '▪', '♦'};
-	private static final int THRESHOLD = 1;
+	private static final int THRESHOLD = 10;
 
 	public void createGraph(String path, Language lang, String type) {
 		//Load sentences from file
@@ -67,7 +67,7 @@ public class AasGraph {
 
 	public void extendGraph(List<Sentence> sentences) {
 		timer.startCount();
-		nodeSet = nodeService.deserializeSetOfNodes("knowledgeSource300.ser");
+		nodeSet = nodeService.deserializeSetOfNodes("knowledgeSource450.ser");
 		timer.endCount();
 		timer.showTime("Deserialize graph");
 
@@ -83,7 +83,7 @@ public class AasGraph {
 		timer.endCount();
 		timer.showTime("Extend graph [+" + sentences.size() + " sentences]");
 
-		nodeService.serializeSetOfNodes(nodeSet, "knowledgeSource400.ser");
+		nodeService.serializeSetOfNodes(nodeSet, "knowledgeSource450PLUS.ser");
 		System.out.println("NodeSet size:" + nodeSet.size());
 	}
 
@@ -231,7 +231,7 @@ public class AasGraph {
 				boolean invalidWord = true;
 				if (nodeSet.contains(node)) {
 					Node oldNode = nodeSet.stream().filter(n -> n.getWord().equals(node.getWord())).findFirst().get();
-					if (oldNode.getLevel() > THRESHOLD) {
+					if (oldNode.getLevel() > THRESHOLD && checkIfContextIsPossible(oldNode, inputNodes.get(inputNodes.size()-1))) {
 						inputNodes.add(oldNode);
 						invalidWord = false;
 					}
@@ -302,6 +302,10 @@ public class AasGraph {
 
 		}
 		return responseMap;
+	}
+
+	private boolean checkIfContextIsPossible(Node currentNode, Node previousNode) {
+		return previousNode.getNeighbourMap().containsKey(currentNode);
 	}
 
 	private Map<Node, Double> sortMapByValue(Map<Node, Double> map) {

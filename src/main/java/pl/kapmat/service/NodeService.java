@@ -164,7 +164,7 @@ public class NodeService {
 		}
 		int maxValue = similarityMap.entrySet().stream().max((e1, e2) -> e1.getValue() > e2.getValue() ? 1 : -1).get().getValue();
 
-		List<Node> similarityList = similarityMap.entrySet().parallelStream()
+		List<Node> similarityList = similarityMap.entrySet().stream()
 				.filter(e -> e.getValue().equals(maxValue - 1) || e.getValue().equals(maxValue))
 				.map(Map.Entry::getKey)
 				.collect(Collectors.toList());
