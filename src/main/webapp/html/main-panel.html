@@ -48,7 +48,7 @@
 						   class="icon-background">Clean input<span class="pull-right"><i
 							class="fa fa-eraser icon-background"></i></span></a>
 					</li>
-					<li><a href="" ng-click="outputText = ''"
+					<li><a href="" ng-click="cleanOutput()"
 						   class="icon-background">Clean output<span class="pull-right"><i
 							class="fa fa-eraser icon-background fa-rotate-180"></i></span></a>
 					</li>
@@ -61,15 +61,17 @@
 
 				<br>
 
-				<div id="outputText2" spellcheck=false ng-model="outputText">
-					<p>{{outputText}}</p>
-				</div>
-
-				<div id="outputText">
-
-				</div>
-
-				<div id="d3-graph">
+				<table>
+					<tr>
+						<td>
+							<div id="outputText">
+							</div>
+						</td>
+						<td>
+							<div id="d3-graph">
+						</td>
+					</tr>
+				</table>
 
 				</div>
 			</div>

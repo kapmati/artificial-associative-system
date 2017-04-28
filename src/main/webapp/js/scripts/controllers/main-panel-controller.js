@@ -43,6 +43,10 @@ angular.module('aas').controller('mainPanelController', [
 			document.getElementById('inputText').innerHTML = '';
 		};
 
+		$scope.cleanOutput = function () {
+			document.getElementById('outputText').innerHTML = '';
+		};
+
 		$scope.checkInputWords = function () {
 			inputText = document.getElementById('inputText').innerHTML;
 			if (inputText !== null && inputText !== "") {
