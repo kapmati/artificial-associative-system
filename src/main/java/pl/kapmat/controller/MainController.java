@@ -45,7 +45,7 @@ public class MainController {
 
 	@RequestMapping(value = "/extendGraph", method = RequestMethod.POST, produces = "application/json")
 	public ResponseEntity<?> extendGraph(@RequestBody String fileName) {
-		String type = "book";
+		String type = "s";
 		aasGraph.extendGraph(sentenceService.getSentencesAfterCorrection(System.getProperty("user.dir") + "/src/main/resources/text/" + fileName, LANGUAGE, type));
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

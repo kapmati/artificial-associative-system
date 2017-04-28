@@ -6,7 +6,7 @@ angular.module('aas').controller('mainPanelController', [
 	'$rootScope', '$scope', 'rest', 'usSpinnerService', '$timeout',
 	function ($rootScope, $scope, rest, usSpinnerService, $timeout) {
 
-		var fileName = 'knowledgeSource450.ser';
+		var fileName = 'test.ser';
 		var inputText = null;
 		$scope.isGraphLoadedSuccessfully = false;
 		$scope.wordsAfterChecking = null;
@@ -62,10 +62,11 @@ angular.module('aas').controller('mainPanelController', [
 				outputText =  outputText + key + ':';
 				if (data.hasOwnProperty(key)) {
 					tooltipWords = '';
-					outputText = outputText + '______________';
-					data[key].forEach(function (singleValue) {
-						outputText = outputText + singleValue;
-					});
+					outputText = outputText + "<br>";
+					for (var word in data[key]) {
+						outputText = outputText + word + "(" + data[key][word] + ")<br>";
+					}
+					outputText = outputText + "<br>";
 					var reg = new RegExp(' ' + key + ' ', "ig");
 					text = text.replace(reg, ' ' +
 						'<span class="hover" style="color:#ff6b00;">' + key +
@@ -81,6 +82,7 @@ angular.module('aas').controller('mainPanelController', [
 			}
 			text = text.substring(2, text.length - 2);
 			document.getElementById("inputText").innerHTML = text;
+			document.getElementById("outputText").innerHTML = outputText;
 			console.log(outputText);
 			$scope.outputText = outputText;
 			$scope.stopSpin();

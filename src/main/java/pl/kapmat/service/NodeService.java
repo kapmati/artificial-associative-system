@@ -21,6 +21,7 @@ public class NodeService {
 	}
 
 	public void serializeSetOfNodes(Set<Node> nodeSet, String graphFileName) {
+		System.out.println("Start SERIALIZATION");
 		try (FileOutputStream file = new FileOutputStream("src/main/resources/" + graphFileName);
 			 ObjectOutputStream output = new ObjectOutputStream(file)
 		) {
