@@ -23,7 +23,11 @@ public class ConvertText {
 	public static void main(String[] args) throws IOException {
 //		Files.write(Paths.get(PATH_OUTPUT), Files.readAllLines(Paths.get(PATH)).stream().filter(ConvertText::containPolishLetter).collect(Collectors.toList()));
 //		mergeFiles();
-		divideBigFile();
+//		divideBigFile();
+		String s1 = "LUBIŁ";
+		String s2 = "dUBIŁ";
+		System.out.println(levenshteinDistance(s1, s2));
+
 	}
 
 	public static void mergeFiles() throws IOException {
@@ -66,5 +70,33 @@ public class ConvertText {
 
 		return sentence.contains(ą) || sentence.contains(ć) || sentence.contains(ę) || sentence.contains(ł) ||
 				sentence.contains(ó) || sentence.contains(ś) || sentence.contains(ź);
+	}
+
+	private static int levenshteinDistance(String s1, String s2) {
+
+		int l1 = s1.length();
+		int l2 = s2.length();
+		int cost;
+		int distanceTable[][] = new int[l1 + 1][l2 + 1];
+
+		for (int i = 0; i <= l1; i++) {
+			distanceTable[i][0] = i;
+		}
+
+		for (int j = 0; j <= l2; j++) {
+			distanceTable[0][j] = j;
+		}
+
+		for (int i = 1; i <= l1; i++) {
+			for (int j = 1; j <= l2; j++) {
+				if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+					cost = 0;
+				} else {
+					cost = 1;
+				}
+				distanceTable[i][j] = Math.min(distanceTable[i - 1][j] + 1, Math.min(distanceTable[i][j - 1] + 1, distanceTable[i - 1][j - 1] + cost));
+			}
+		}
+		return distanceTable[l1][l2];
 	}
 }

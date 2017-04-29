@@ -3,6 +3,7 @@ package pl.kapmat.service;
 import org.springframework.stereotype.Service;
 import pl.kapmat.algorithm.Coefficient;
 import pl.kapmat.algorithm.Node;
+import pl.kapmat.util.MathUtil;
 
 import java.io.*;
 import java.util.*;
@@ -125,7 +126,8 @@ public class NodeService {
 	}
 
 	public Map<Node, Double> getBestSimilarWord(List<Node> inputNodes, Node node, Set<Node> candidates) {
-		List<Node> similarWords = similarWord(node, candidates);
+//		List<Node> similarWords = similarWord(node, candidates);
+		List<Node> similarWords = closestWordsByLevenshtein(node, candidates, 2);
 		Map<Node, Double> resultMap = new LinkedHashMap<>();
 
 		for (Node n : inputNodes) {
@@ -140,7 +142,18 @@ public class NodeService {
 			}
 		}
 
-		return resultMap;
+		Map<Node, Double> filteredResultMap = new LinkedHashMap<>();
+		if (inputNodes.size() > 0) {
+			for (Map.Entry<Node, Double> entry : resultMap.entrySet()) {
+				if (inputNodes.get(inputNodes.size()-1).getNeighbourMap().containsKey(entry.getKey())) {
+					filteredResultMap.put(entry.getKey(), entry.getValue());
+				}
+			}
+		} else {
+			filteredResultMap = resultMap;
+		}
+
+		return filteredResultMap;
 	}
 
 	public List<Node> similarWord(Node node, Set<Node> candidates) {
@@ -176,16 +189,60 @@ public class NodeService {
 		return result;
 	}
 
-	public Map<Node, Double> checkNextPartOfContext(Map<Node, Double> bestNodes, List<String> otherWords) {
-		Map<Node, Double> bestNewNodes = new LinkedHashMap<>();
-		for (Map.Entry<Node, Double> entry : bestNodes.entrySet()) {
-			if (entry.getKey().getNeighbourMap().entrySet().stream().anyMatch(e -> otherWords.contains(e.getKey().getWord()))) {
-				bestNewNodes.put(entry.getKey(), entry.getValue() +
-						entry.getKey().getNeighbourMap().entrySet().stream()
-								.filter(e -> otherWords.contains(e.getKey().getWord())).findFirst().get().getValue().getSynapticWeight());
+	public List<Node> closestWordsByLevenshtein(Node node, Set<Node> candidates, int maxDistance) {
+		int distance;
+		List<Node> closestNodes = new ArrayList<>();
+		for (Node candidate : candidates) {
+			distance = levenshteinDistance(node.getWord(), candidate.getWord());
+			if (distance <= maxDistance) {
+				closestNodes.add(candidate);
 			}
 		}
-		return bestNewNodes;
+		return closestNodes;
+	}
+
+	public Map<Node, Double> checkNextPartOfContext(Map<Node, Double> bestNodes, List<String> otherWords) {
+		if (otherWords.size() > 0) {
+			Map<Node, Double> bestNewNodes = new LinkedHashMap<>();
+			for (Map.Entry<Node, Double> entry : bestNodes.entrySet()) {
+				if (entry.getKey().getNeighbourMap().entrySet().stream().anyMatch(e -> otherWords.get(0).equalsIgnoreCase(e.getKey().getWord()))) {
+					bestNewNodes.put(entry.getKey(), entry.getValue() +
+							entry.getKey().getNeighbourMap().entrySet().stream()
+									.filter(e -> otherWords.get(0).equalsIgnoreCase(e.getKey().getWord())).findFirst().get().getValue().getSynapticWeight());
+				}
+			}
+			return bestNewNodes;
+		} else {
+			return bestNodes;
+		}
+	}
+
+	private static int levenshteinDistance(String s1, String s2) {
+
+		int l1 = s1.length();
+		int l2 = s2.length();
+		int cost;
+		int distanceTable[][] = new int[l1 + 1][l2 + 1];
+
+		for (int i = 0; i <= l1; i++) {
+			distanceTable[i][0] = i;
+		}
+
+		for (int j = 0; j <= l2; j++) {
+			distanceTable[0][j] = j;
+		}
+
+		for (int i = 1; i <= l1; i++) {
+			for (int j = 1; j <= l2; j++) {
+				if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+					cost = 0;
+				} else {
+					cost = 1;
+				}
+				distanceTable[i][j] = Math.min(distanceTable[i - 1][j] + 1, Math.min(distanceTable[i][j - 1] + 1, distanceTable[i - 1][j - 1] + cost));
+			}
+		}
+		return distanceTable[l1][l2];
 	}
 
 }

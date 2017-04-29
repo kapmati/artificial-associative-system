@@ -6,7 +6,8 @@ angular.module('aas').controller('mainPanelController', [
 	'$rootScope', '$scope', 'rest', 'usSpinnerService', '$timeout',
 	function ($rootScope, $scope, rest, usSpinnerService, $timeout) {
 
-		var fileName = 'test.ser';
+		var fileName = 'knowledgeSource302.ser';
+		//var fileName = 'test.ser';
 		var inputText = null;
 		$scope.isGraphLoadedSuccessfully = false;
 		$scope.wordsAfterChecking = null;
